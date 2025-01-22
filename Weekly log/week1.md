@@ -23,3 +23,16 @@ The objective of the **Computer Systems Complaint Tracking** project is to creat
 6. **Automated Notifications**: Ensure that all stakeholders are notified in real time about updates, changes, and task completions related to repair tickets.
 
 By achieving these objectives, the project aims to significantly improve the workflow of the TRC department, increase operational transparency, and enhance the overall efficiency of the repair and maintenance process.
+
+### *Week 1: Project Setup and Planning*
+- *Frontend*: - Swetha
+  - Set up the React project structure.
+  - Configure basic routing and placeholder pages (e.g., Login, Dashboard, Technician Dictionary).
+- *Backend*: - Harishh
+  - Initialize the Flask project.
+  - Set up basic endpoints for testing (e.g., / and /health).
+  - Integrate Flask with CORS for API communication.
+- *Database*: - Gokul
+  - Design the users table and set up a local MySQL database.
+  - Create sample data (e.g., unapproved technicians, admin users, and general users).
+
