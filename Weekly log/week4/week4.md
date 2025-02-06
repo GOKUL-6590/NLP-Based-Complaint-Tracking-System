@@ -1,11 +1,11 @@
 ### *Week 4: Admin Dashboard*
-- *Frontend*:
+- *Frontend*: - AD213
   - Build the Admin Dashboard page with sections for:
     - Unapproved Technicians.
     - All Technicians.
   - Integrate API calls for these sections.
-- *Backend*:
+- *Backend*: - AD139
   - Create APIs for fetching unapproved technicians and approving a technician.
-- *Database*:
+- *Database*: - AD130
   - Ensure queries support filtering by is_approved status.
   - Test and optimize the queries.
