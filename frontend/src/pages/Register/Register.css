@@ -1,0 +1,157 @@
+/* Global reset and font styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Registration Form Styling */
+.register {
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.register:hover {
+    transform: translateY(-10px);
+}
+
+.register h2 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.register label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    display: inline-block;
+    /* Change this line */
+    text-align: left;
+    /* Ensure left alignment */
+    width: 100%;
+    /* Ensure it spans the full width */
+}
+
+
+.register input,
+.register select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 16px;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f4f6f9;
+    transition: all 0.3s ease;
+}
+
+.register input:focus,
+.register select:focus {
+    border-color: #1abc9c;
+    background-color: #ffffff;
+    outline: none;
+}
+
+.register input[type="password"] {
+    letter-spacing: 0.5px;
+}
+
+/* Submit Button Styling */
+.register button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register button:hover {
+    background-color: #16a085;
+}
+
+.register button:disabled {
+    background-color: #BDC3C7;
+    cursor: not-allowed;
+}
+
+/* Footer link for redirection */
+.register p {
+    text-align: center;
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-top: 20px;
+}
+
+.register p a {
+    color: #1abc9c;
+    text-decoration: none;
+}
+
+.register p a:hover {
+    text-decoration: underline;
+}
+
+/* Small screen responsiveness */
+@media (max-width: 768px) {
+    .register {
+        padding: 25px;
+    }
+
+    .register h2 {
+        font-size: 26px;
+    }
+
+    .register input,
+    .register select,
+    .register button {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register {
+        padding: 20px;
+    }
+
+    .register h2 {
+        font-size: 24px;
+    }
+
+    .register input,
+    .register select,
+    .register button {
+        font-size: 14px;
+    }
+}

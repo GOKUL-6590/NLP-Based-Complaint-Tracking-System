@@ -1,0 +1,252 @@
+.admin-reports-container {
+    padding: 24px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    overflow-x: auto;
+}
+
+/* Header */
+.admin-reports-container h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 16px;
+}
+
+/* Style for the dropdown container */
+.admin-reports-dropdown {
+    margin: 20px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Style for the select dropdown */
+.admin-reports-dropdown select {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect */
+.admin-reports-dropdown select:hover {
+    border-color: #0056b3;
+}
+
+/* Focus effect */
+.admin-reports-dropdown select:focus {
+    border-color: #004080;
+    box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+}
+
+/* Make the dropdown arrow more visible */
+.admin-reports-dropdown select::-ms-expand {
+    display: none;
+}
+
+.admin-reports-dropdown select option {
+    font-size: 14px;
+    padding: 10px;
+}
+
+
+/* Filter Container */
+.admin-reports-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    align-items: center;
+}
+
+.admin-reports-filters label {
+    font-weight: bold;
+    margin-right: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.admin-reports-filters select,
+.admin-reports-filters input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.admin-reports-filters input {
+    width: 200px;
+}
+
+.admin-reports-filters button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.admin-reports-filters button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Table Wrapper */
+.admin-reports-table-wrapper {
+    background-color: #ffffff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-x: auto;
+    min-height: 80vh;
+    max-height: 80vh;
+}
+
+/* Tickets Table */
+.admin-reports-tickets-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-reports-tickets-table th,
+.admin-reports-tickets-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    color: #2d3436;
+}
+
+.admin-reports-tickets-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.admin-reports-tickets-table tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Status Styling */
+.admin-reports-status-open {
+    color: #2d7a2d;
+    font-weight: bold;
+}
+
+.admin-reports-status-in-progress {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.admin-reports-status-closed {
+    color: #d63031;
+    font-weight: bold;
+}
+
+/* View Ticket Button */
+.admin-reports-view-ticket {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    text-decoration: none;
+    background-color: #6c5ce7;
+    color: #ffffff;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.admin-reports-view-ticket:hover {
+    background-color: #5e54d2;
+}
+
+/* Card View for Mobile */
+.admin-reports-card {
+    display: none;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.admin-reports-card div {
+    margin-bottom: 8px;
+}
+
+.admin-reports-card .status {
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .admin-reports-container {
+        padding: 16px;
+    }
+
+    .admin-reports-filters {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .admin-reports-filters select,
+    .admin-reports-filters input {
+        width: 100%;
+    }
+
+    .admin-reports-table-wrapper {
+        padding: 12px;
+    }
+
+    .admin-reports-tickets-table {
+        display: none;
+    }
+
+    .admin-reports-card {
+        display: flex;
+    }
+}
+
+/* Pagination Buttons */
+.admin-reports-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.admin-reports-pagination button {
+    padding: 8px 16px;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-reports-pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.admin-reports-pagination button:hover:not(:disabled) {
+    background-color: #5e54d2;
+}

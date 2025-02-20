@@ -1,0 +1,126 @@
+.technician-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* First Row Layout */
+.first-row-tech {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: 20px;
+}
+
+/* Calendar Container */
+.calendar-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.elegant-calendar {
+    border: none;
+    font-size: 16px;
+}
+
+.elegant-calendar .react-calendar__tile {
+    padding: 10px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.elegant-calendar .react-calendar__tile:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.elegant-calendar .react-calendar__tile--active {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+/* Stats Container */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    /* background-color: #fff; */
+    padding: 5px;
+    border-radius: 12px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd; */
+}
+
+.metric-item {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.metric-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.metric-item h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+    color: #007bff;
+}
+
+.metric-item span {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Second Row Layout */
+.second-row-tech {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: 20px;
+}
+
+.dictionary-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.dictionary-item {
+    margin-bottom: 10px;
+}
+
+.chart-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+
+    .first-row,
+    .second-row {
+        grid-template-columns: 1fr;
+    }
+
+    .metric-item {
+        width: 100%;
+    }
+}

@@ -1,0 +1,234 @@
+.ticket-history-container {
+    padding: 24px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    overflow-x: auto;
+}
+
+/* Header */
+.ticket-history-container h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 16px;
+}
+
+/* Filter Container */
+.filter-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 10px;
+}
+
+.filter-container label {
+    font-size: 1rem;
+    color: #2d3436;
+    font-weight: 500;
+}
+
+.filter-container select {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-container select:focus {
+    border-color: #6c5ce7;
+    outline: none;
+    box-shadow: 0 0 12px rgba(108, 92, 231, 0.2);
+}
+
+/* Table Wrapper */
+.table-wrapper {
+
+    background-color: #ffffff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-x: auto;
+    min-height: 80vh;
+    max-height: 80vh;
+}
+
+
+/* Ticket Table */
+.ticket-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ticket-table th,
+.ticket-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    color: #2d3436;
+}
+
+.ticket-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.ticket-table tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Status Styling */
+.status-open {
+    color: #2d7a2d;
+    font-weight: bold;
+}
+
+.status-closed {
+    color: #d63031;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+/* View Ticket Link */
+.view-ticket {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    text-decoration: none;
+    background-color: #6c5ce7;
+    color: #ffffff;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.view-ticket:hover {
+    background-color: #5e54d2;
+}
+
+/* Center the no-tickets message inside the table-wrapper */
+
+
+/* Cross icon style */
+.no-tickets-icon {
+    font-size: 24px;
+}
+
+.table-cell-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+
+
+/* General Adjustments for Smaller Screens */
+@media (max-width: 768px) {
+    .ticket-history-container {
+        padding: 16px;
+    }
+
+    .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .filter-container select {
+        width: 100%;
+    }
+
+    .table-wrapper {
+        padding: 12px;
+        overflow-y: auto;
+    }
+
+    .ticket-table th,
+    .ticket-table td {
+        padding: 8px;
+    }
+
+    .ticket-table th {
+        font-size: 0.875rem;
+    }
+
+    .ticket-table td {
+        font-size: 0.875rem;
+    }
+
+    .ticket-table thead {
+        display: none;
+    }
+
+    .ticket-table tr {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 16px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+    }
+
+    .ticket-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        border-bottom: none;
+        border-right: none;
+    }
+
+    .ticket-table td:last-child {
+        border-bottom: none;
+    }
+
+    .ticket-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        flex-basis: 50%;
+        text-align: left;
+        color: #2d3436;
+    }
+
+    .ticket-table td .table-cell-content {
+        justify-content: flex-end;
+    }
+}
+
+/* Pagination Buttons */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.pagination button {
+    padding: 8px 16px;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #5e54d2;
+}

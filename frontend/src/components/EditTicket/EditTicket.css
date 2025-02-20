@@ -1,0 +1,315 @@
+/* TicketModal.css */
+.ticket-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.ticket-modal-content {
+    background: white;
+    width: 60%;
+    max-width: 800px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.ticket-id {
+    color: #555;
+    font-size: 14px;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.modal-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.detail-item {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.attachments-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.attachments-list li {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.attachments-list li a {
+    text-decoration: none;
+    color: #007bff;
+    margin-left: 5px;
+}
+
+/* Status Progress */
+/* .progress-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+} */
+
+.progress-line {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 80%;
+    height: 5px;
+    background: #ddd;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.progress-fill {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 0%;
+    height: 5px;
+    background: #6c5ce7;
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-step {
+    background: #fff;
+    border: 2px solid #ccc;
+    padding: 6px;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.progress-step.active {
+    border-color: #6c5ce7;
+    background: #6c5ce7;
+    color: white;
+}
+
+.progress-text {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+    color: #555;
+}
+
+/* Action buttons */
+.action-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-left: 25%;
+    min-width: 200px;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+.closure-log-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical;
+    margin-top: 10px;
+}
+
+.no-attachments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: #888;
+    font-size: 16px;
+}
+
+.empty-icon {
+    font-size: 40px;
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Attachments container */
+.attachments-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Small thumbnails */
+.attachment-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.attachment-thumbnail:hover {
+    transform: scale(1.1);
+}
+
+/* Image Preview Modal */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.image-modal-content {
+    position: relative;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.large-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Close Button */
+/* .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: black;
+} */
+.closure-log-section {
+    margin-top: 10px;
+}
+
+.closure-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.submit-closure-button {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-closure-button:hover {
+    background-color: #218838;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .large-image {
+        max-width: 80vw;
+        max-height: 80vh;
+    }
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ticket-modal-content {
+        width: 90%;
+        max-width: none;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-button {
+        margin-left: 25px;
+    }
+}

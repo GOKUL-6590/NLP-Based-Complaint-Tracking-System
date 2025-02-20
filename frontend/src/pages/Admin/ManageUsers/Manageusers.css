@@ -1,0 +1,204 @@
+/* Overall container for the entire page */
+.manage-users-container {
+    display: flex;
+    justify-content: space-between;
+    /* Distribute space between the two columns */
+    padding: 20px;
+    background-color: #f4f7fc;
+    height: 100vh;
+    /* Full viewport height */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Container for both columns */
+.column-container {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    /* Space between the two columns */
+}
+
+/* The first column, which will contain two rows */
+.first-column {
+    display: flex;
+    flex-direction: column;
+    /* Stack the rows vertically */
+    width: 48%;
+    /* Take up 48% of the container width */
+    height: 100%;
+    /* Full height */
+    gap: 20px;
+    /* Space between the two rows */
+}
+
+/* First row in the first column */
+.first-column .first-row,
+.first-column .second-row {
+    flex: 1;
+    /* Ensures both rows take up equal height */
+    overflow-y: auto;
+    /* Allows vertical scrolling if content overflows */
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Second column */
+.second-column {
+    width: 48%;
+    /* Take up 48% of the container width */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    /* Full height */
+    overflow-y: auto;
+    /* Allows vertical scrolling if content overflows */
+}
+
+/* Header styling */
+h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Paragraph text styling */
+p {
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+/* Technician item styling */
+.technician-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ecf0f1;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+/* Technician name */
+.technician-item span {
+    font-weight: bold;
+    color: #34495e;
+}
+
+/* Approve button styling */
+.approve-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.approve-btn:hover {
+    background-color: #2ecc71;
+}
+
+/* Technician dictionary list */
+/* Technician dictionary container */
+.technician-dictionary {
+    flex: 1;
+    /* Takes equal height in the first column */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+/* Title of the technician dictionary */
+.technician-dictionary h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Create a grid to display technicians as cards (2 or 3 per row) */
+.technician-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Default to 3 columns per row */
+    gap: 20px;
+    /* Space between the cards */
+    padding: 10px;
+}
+
+/* Media query for smaller screens, switch to 2 columns per row */
+@media (max-width: 768px) {
+    .technician-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns per row on smaller screens */
+    }
+}
+
+/* Media query for very small screens, switch to 1 column per row */
+@media (max-width: 480px) {
+    .technician-cards-container {
+        grid-template-columns: 1fr;
+        /* 1 column per row on very small screens */
+    }
+}
+
+/* Styling for each technician card */
+.technician-card {
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Hover effect for technician cards */
+.technician-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Technician name styling */
+.technician-card .technician-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+/* Technician role styling */
+.technician-card .technician-role {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+/* Technician qualifications or other details */
+.technician-card .technician-details {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-top: 10px;
+}
+
+
+/* Second column list of users */
+.second-column ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.second-column li {
+    padding: 8px;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.second-column li:hover {
+    background-color: #bdc3c7;
+}

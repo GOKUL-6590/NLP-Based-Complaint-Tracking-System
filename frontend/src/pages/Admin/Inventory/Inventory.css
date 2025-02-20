@@ -1,0 +1,179 @@
+.inventory-container {
+    max-width: 100vw;
+    height: 100vh;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    /* Light background for better contrast */
+}
+
+.inventory-container h2 {
+    text-align: center;
+    color: #007bff;
+}
+
+/* Grid Layout */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Inventory List */
+.inventory-list {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.inventory-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.inventory-list li:last-child {
+    border-bottom: none;
+}
+
+/* Right Column */
+.right-column {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Increase gap */
+    justify-content: space-between;
+    /* Ensures spacing between elements */
+}
+
+
+/* Technician Requests */
+.technician-requests {
+    height: 35vh;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.technician-requests ul {
+    list-style: none;
+    padding: 0;
+}
+
+.technician-requests li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.technician-requests li:last-child {
+    border-bottom: none;
+}
+
+/* Inventory Form */
+.inventory-form {
+    background: white;
+    height: 45vh;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.inventory-form input,
+.inventory-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.inventory-form textarea {
+    min-height: 60px;
+}
+
+.inventory-form button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.inventory-form button:hover {
+    background: #0056b3;
+}
+
+/* Ticket Table */
+.inventory-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    table-layout: fixed;
+    /* Ensures columns adjust to fit the container */
+}
+
+.inventory-table th,
+.inventory-table td {
+    padding: 12px;
+    /* Adjust the padding if needed */
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    color: #2d3436;
+}
+
+.inventory-table th {
+    background-color: #f8f9fa;
+    /* Light header background */
+    font-weight: 600;
+}
+
+.inventory-table tr:hover {
+    background-color: #f8f9fa;
+    /* Light hover effect */
+    cursor: pointer;
+}
+
+.accept-btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.reject-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.accept-btn:hover {
+    background-color: darkgreen;
+}
+
+.reject-btn:hover {
+    background-color: darkred;
+}
