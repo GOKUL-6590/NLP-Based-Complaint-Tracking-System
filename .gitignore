@@ -1,0 +1,40 @@
+# Ignore node_modules (common in frontend/backend Node.js projects)
+node_modules/
+
+# Ignore build artifacts
+dist/
+build/
+
+# Ignore logs and temp files
+*.log
+*.tmp
+
+# Ignore environment files
+.env
+*.env
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optionally ignore specific folders
+# e.g., /other_folder/
+# Project-specific folders
+dfd/
+results/
+trained_model/
+weekly log/
+
+# Project-specific files
+ssh
+ssh.pub
+
+# Common ignores (optional)
+node_modules/
+dist/
+*.log
+.env

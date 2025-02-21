@@ -24,7 +24,6 @@ const TicketHistory = () => {
             dispatch(showLoading())
             const response = await getTicketHistoryByUser(user.id);
             dispatch(hideLoading())
-            console.log("API Response:", response);
 
             if (response.success) {
                 setTickets(response.tickets);
@@ -34,7 +33,7 @@ const TicketHistory = () => {
         } catch (err) {
             dispatch(hideLoading())
             setError("Failed to fetch ticket history.");
-        } 
+        }
     };
 
     // Filter tickets based on status
@@ -88,19 +87,7 @@ const TicketHistory = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan="9">
-                                    <div className="table-cell-content">Loading...</div>
-                                </td>
-                            </tr>
-                        ) : error ? (
-                            <tr>
-                                <td colSpan="9" className="error-message">
-                                    <div className="table-cell-content">{error}</div>
-                                </td>
-                            </tr>
-                        ) : currentTickets.length === 0 ? (
+                        {currentTickets.length === 0 ? (
                             <tr>
                                 <td colSpan="9" className="no-tickets">
                                     <div className="table-cell-content">
