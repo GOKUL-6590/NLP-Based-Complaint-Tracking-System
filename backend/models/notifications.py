@@ -9,12 +9,12 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 # Firebase Cloud Messaging (FCM) configuration
-FCM_SERVER_KEY = "BJHJXiz83xlAzyzk9jRhOaOd9fbuL6oyE96Y_wExtE1ZyMjlpUyDr0Hb0AbKYEYJHG-xHEdSv7EcB3szhZ40Uoo"
-FCM_URL = "https://fcm.googleapis.com/fcm/send"
+# FCM_SERVER_KEY = "BJHJXiz83xlAzyzk9jRhOaOd9fbuL6oyE96Y_wExtE1ZyMjlpUyDr0Hb0AbKYEYJHG-xHEdSv7EcB3szhZ40Uoo"
+# FCM_URL = "https://fcm.googleapis.com/fcm/send"
 
 
-cred = credentials.Certificate("C:/Users/haris/Desktop/s8-project/backend/firebase-service-account.json")
-firebase_admin.initialize_app(cred)
+# cred = credentials.Certificate("C:/Users/haris/Desktop/s8-project/backend/firebase-service-account.json")
+# firebase_admin.initialize_app(cred)
 
 
 def get_notifications_by_receiver(receiver_id):
