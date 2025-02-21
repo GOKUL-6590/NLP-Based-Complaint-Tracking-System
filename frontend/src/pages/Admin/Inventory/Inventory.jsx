@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./Inventory.css"; // Make sure this contains the updated CSS
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItemToInventory, fetchInventoryItems, fetchSpareRequests, updateSpareRequestStatus } from "../../../service/adminService";
 import toast from "react-hot-toast";
 import { FaCheck, FaTimes } from "react-icons/fa";
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
     const [requests, setRequests] = useState([]);
     const { user } = useSelector((state) => state.user);
-
+    const dispatch = useDispatch()
     useEffect(() => {
         const loadInventoryAndRequests = async () => {
             try {
@@ -52,7 +53,10 @@ const Inventory = () => {
         };
 
         try {
-            const response = await addItemToInventory(newItemObj); // Call service function
+
+            dispatch(showLoading())
+            const response = await addItemToInventory(newItemObj); 
+            dispatch(hideLoading())
 
             if (response.success) {
                 toast.success(response.message);
@@ -63,6 +67,7 @@ const Inventory = () => {
             }
 
         } catch (error) {
+            dispatch(hideLoading())
             alert("Failed to save item. Please try again.");
         }
     };
@@ -70,10 +75,9 @@ const Inventory = () => {
         try {
             // Ensure requestIds is an array
             const requestIdsArray = Array.isArray(requestIds) ? requestIds : [requestIds];
-
-            // Send request to update all request IDs at once
+            dispatch(showLoading())
             const response = await updateSpareRequestStatus(ticket_id, requestIdsArray, status, user.id, technician_id);
-
+            dispatch(hideLoading())
             if (response.success) {
                 toast.success(`Request ${status} successfully`);
                 window.location.reload()

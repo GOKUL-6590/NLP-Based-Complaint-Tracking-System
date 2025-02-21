@@ -5,8 +5,9 @@ import TicketDetailsModal from "../../../components/TicketDetailsModal/TicketDet
 import AssignTechnicianModal from "../../../components/AssignTechnicianModal/AssignTechnicianModal";
 import toast from "react-hot-toast"
 import socket from "../../../components/socket";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TicketModal from "../../../components/EditTicket/EditTicket";
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 const ManageTickets = () => {
     const [assignedTickets, setAssignedTickets] = useState([]);
@@ -16,6 +17,7 @@ const ManageTickets = () => {
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
     const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchAssignedTickets();
@@ -35,18 +37,24 @@ const ManageTickets = () => {
 
     const fetchAssignedTickets = async () => {
         try {
+            dispatch(showLoading())
             const response = await getAssignedTickets();
+            dispatch(hideLoading())
             setAssignedTickets(response.tickets);
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error fetching assigned tickets:", error);
         }
     };
 
     const fetchUnassignedTickets = async () => {
         try {
+            dispatch(showLoading())
             const response = await getUnassignedTickets();
+            dispatch(hideLoading())
             setUnassignedTickets(response.tickets);
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error fetching unassigned tickets:", error);
         }
     };
@@ -54,7 +62,9 @@ const ManageTickets = () => {
     const handleAssignTicket = async (technician, assignType) => {
         try {
             console.log(selectedTicket.ticket_id, technician, assignType)
+            dispatch(showLoading())
             const response = await assignTicketToTechnician(selectedTicket.ticket_id, technician.technician_id, assignType);
+            dispatch(hideLoading())
             socket.emit("ticket-assigned", user.id);
             setIsAssignModalOpen(false);
             setSelectedTicket(null)
@@ -65,6 +75,7 @@ const ManageTickets = () => {
             }
 
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error assigning ticket:", error);
             toast.error("Failed to assign ticket.");
         }

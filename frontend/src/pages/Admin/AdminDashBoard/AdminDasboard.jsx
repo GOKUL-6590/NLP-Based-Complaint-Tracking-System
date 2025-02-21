@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./AdminDashboard.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Chart from "react-apexcharts";
 import { fetchAdminDashboardData } from "../../../service/adminService"; // Import service
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user); // Get user info from Redux
-
+    const dispatch = useDispatch()
     const [stats, setStats] = useState({
         totalUsers: 0,
         openTickets: 0,
@@ -18,7 +19,9 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         const getDashboardData = async () => {
+            dispatch(showLoading())
             const data = await fetchAdminDashboardData();
+            dispatch(hideLoading())
             if (data) {
                 setStats(data);
             }

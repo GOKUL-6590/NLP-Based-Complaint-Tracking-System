@@ -3,6 +3,8 @@ import { getAllTickets, getTechnicianPerformanceMetrics } from "../../../service
 import TicketTable from "../../../components/AdminReportsComponets/TicketTable";
 import TechnicianMetricsTable from "../../../components/AdminReportsComponets/TechnicianMetricsTable";
 import "./AdminReports.css"; // Import the updated CSS
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 
 
@@ -19,9 +21,10 @@ const AdminReports = () => {
         technician: "",
         period: "weekly", // default period
     });
-    const [reportType, setReportType] = useState(""); // Tracks the selected report type
     const [currentPage, setCurrentPage] = useState(1);
     const [ticketsPerPage, setTicketsPerPage] = useState(10);
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         fetchTickets();
@@ -35,26 +38,32 @@ const AdminReports = () => {
 
     const fetchTickets = async () => {
         try {
+            dispatch(showLoading())
             const response = await getAllTickets();
+            dispatch(hideLoading())
             if (response.success) {
                 setTickets(response.tickets);
             } else {
                 setTickets([]);
             }
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error fetching tickets:", error);
         }
     };
 
     const fetchTechnicianMetrics = async () => {
         try {
+            dispatch(showLoading())
             const response = await getTechnicianPerformanceMetrics();
+            dispatch(hideLoading())
             if (response.success) {
                 setTechnicianMetrics(response.technicians);
             } else {
                 setTechnicianMetrics([]);
             }
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error fetching technician metrics:", error);
         }
     };

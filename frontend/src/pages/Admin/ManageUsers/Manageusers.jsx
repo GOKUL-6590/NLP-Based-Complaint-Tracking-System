@@ -7,17 +7,22 @@ import {
 } from "../../../service/adminService";
 
 import "./Manageusers.css"
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 const ManageUsers = () => {
     const [unapprovedTechnicians, setUnapprovedTechnicians] = useState([]);
     const [approvedTechnicians, setApprovedTechnicians] = useState([]);
     const [users, setUsers] = useState([]);
     const [notifications, setNotifications] = useState(0);
+    const dispatch = useDispatch()
 
     // Handle technician approval
     const approveTechnician = async (technicianId) => {
         try {
+            dispatch(showLoading())
             const response = await sendTechnicianApprovalRejection(technicianId, "approve");
+            dispatch(hideLoading())
             if (response.data.success) {
                 const technicianToApprove = unapprovedTechnicians.find((tech) => tech.id === technicianId);
 
@@ -29,6 +34,7 @@ const ManageUsers = () => {
                 setNotifications((prev) => Math.max(0, prev - 1));
             }
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error approving technician:", error);
         }
     };
@@ -36,7 +42,9 @@ const ManageUsers = () => {
     // Handle technician rejection
     const rejectTechnician = async (technicianId) => {
         try {
+            dispatch(showLoading())
             const response = await sendTechnicianApprovalRejection(technicianId, "reject");
+            dispatch(hideLoading())
             if (response.data.success) {
                 setUnapprovedTechnicians((prev) =>
                     prev.filter((tech) => tech.id !== technicianId)
@@ -45,6 +53,7 @@ const ManageUsers = () => {
                 setNotifications((prev) => Math.max(0, prev - 1));
             }
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error rejecting technician:", error);
         }
     };
@@ -54,15 +63,20 @@ const ManageUsers = () => {
         const fetchTechnicians = async () => {
             try {
                 // Fetch unapproved technicians
+                dispatch(showLoading())
                 const unapprovedResponse = await getUnapprovedTechnicians();
+                dispatch(hideLoading())
                 setUnapprovedTechnicians(unapprovedResponse.technicians || []);
                 setNotifications(unapprovedResponse.technicians?.length || 0);
 
                 // Fetch approved technicians
+                dispatch(hideLoading())
                 const approvedResponse = await getApprovedTechnicians();
+                dispatch(hideLoading())
                 console.log(approvedResponse)
                 setApprovedTechnicians(approvedResponse.technicians || []);
             } catch (error) {
+                dispatch(hideLoading())
                 console.error("Error fetching technicians:", error);
             }
         };
@@ -74,9 +88,12 @@ const ManageUsers = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                dispatch(showLoading())
                 const userResponse = await getAllUsers();
+                dispatch(hideLoading())
                 setUsers(userResponse.users || []);
             } catch (error) {
+                dispatch(hideLoading())
                 console.error("Error fetching users:", error);
             }
         };
