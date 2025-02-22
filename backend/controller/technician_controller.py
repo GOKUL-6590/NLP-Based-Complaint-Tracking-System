@@ -1,7 +1,7 @@
 from flask import jsonify
 
 from backend.models.notifications import send_notification
-from backend.models.technician import fetch_all_inventory_from_db, fetch_all_tickets_from_db, fetch_requested_spares_from_db, fetch_technician_stats, fetch_tickets_from_db, save_spares_request,  update_ticket_status_in_db
+from backend.models.technician import fetch_all_inventory_from_db, fetch_all_tickets_from_db, fetch_assigned_tickets_from_db, fetch_requested_spares_from_db, fetch_technician_stats, save_spares_request,  update_ticket_status_in_db
 
 def get_technician_stats(technician_id):
     try:
@@ -25,7 +25,7 @@ def get_technician_stats(technician_id):
 
 def get_assigned_tickets(tech_id):
     try:
-        tickets = fetch_tickets_from_db(tech_id)
+        tickets = fetch_assigned_tickets_from_db(tech_id)
 
         return jsonify({
             "success": True,
@@ -114,11 +114,11 @@ def process_spares_request(ticket_id, technician_id, items):
         result = save_spares_request(ticket_id, technician_id, items)
 
         if result:
-            notification_message = f"Spares request for Ticket #{ticket_id} has been submitted successfully."
+            notification_message = f"Spares request for Ticket #{ticket_id}."
             
             send_notification(
                 sender_id=technician_id,
-                receiver_id=1,  # Assuming 1 is the admin/system user
+                receiver_id=5,  # Assuming 1 is the admin/system user
                 sender_name="Technician",
                 message=notification_message,
                 notification_type="spares_request"

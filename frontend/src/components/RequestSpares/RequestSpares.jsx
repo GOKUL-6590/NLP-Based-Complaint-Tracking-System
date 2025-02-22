@@ -2,23 +2,29 @@ import React, { useState, useEffect } from "react";
 import { getInventory, requestSpares } from "../../service/TechnicianService";
 import "./RequestSpares.css";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../redux/alertSlice";
+import socket from "../socket";
 
 const RequestSparesModal = ({ ticketId, technicianId, onClose }) => {
     const [inventory, setInventory] = useState([]); // Available spares
     const [cart, setCart] = useState([]); // Selected items
     const { user } = useSelector((state) => state.user)
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const fetchInventory = async () => {
             try {
+                dispatch(showLoading())
                 const response = await getInventory();
+                dispatch(hideLoading())
                 if (response.success) {
                     setInventory(response.inventory); // Extract inventory from response
                 } else {
                     console.error("Error fetching inventory:", response.message);
                 }
             } catch (error) {
+                dispatch(hideLoading())
                 console.error("Failed to fetch inventory", error);
             }
         };
@@ -75,11 +81,20 @@ const RequestSparesModal = ({ ticketId, technicianId, onClose }) => {
                     quantity: item.quantity
                 }))
             };
-
+            dispatch(showLoading())
             const response = await requestSpares(requestData);
-            toast.success("Spares requested successfully!");
-            onClose();
+            dispatch(hideLoading())
+            if (response.success) {
+                socket.emit("unread-notifications", 5); // Emit update
+
+                toast.success("Spares requested successfully!");
+                onClose();
+            } else {
+                toast.error("Error in submitting the request")
+            }
+
         } catch (error) {
+            dispatch(hideLoading())
             console.error("Error requesting spares:", error);
             toast.error("Failed to request spares.");
         }

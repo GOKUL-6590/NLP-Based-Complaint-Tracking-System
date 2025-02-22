@@ -166,7 +166,7 @@ def update_ticket_status_in_db(ticket_id, status):
         print(f"Error: {err}")
         return False
 
-def fetch_tickets_from_db(technician_id):
+def fetch_assigned_tickets_from_db(technician_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -188,7 +188,7 @@ def fetch_tickets_from_db(technician_id):
             tm.closure_time,
             tm.sla_deadline,
             tm.assigned_by_admin,
-            u.id,
+            u.id AS user_id,
             u.name AS user_name,
             u.phoneNumber AS user_phone_number,
             GROUP_CONCAT(a.file_path SEPARATOR ', ') AS attachments

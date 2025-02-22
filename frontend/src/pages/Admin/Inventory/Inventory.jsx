@@ -5,6 +5,7 @@ import { addItemToInventory, fetchInventoryItems, fetchSpareRequests, updateSpar
 import toast from "react-hot-toast";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
+import socket from "../../../components/socket";
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
@@ -55,7 +56,7 @@ const Inventory = () => {
         try {
 
             dispatch(showLoading())
-            const response = await addItemToInventory(newItemObj); 
+            const response = await addItemToInventory(newItemObj);
             dispatch(hideLoading())
 
             if (response.success) {
@@ -80,6 +81,7 @@ const Inventory = () => {
             dispatch(hideLoading())
             if (response.success) {
                 toast.success(`Request ${status} successfully`);
+                socket.emit("unread-notifications", technician_id)
                 window.location.reload()
                 setRequests((prevRequests) =>
                     prevRequests.map((req) =>

@@ -55,8 +55,8 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
         if (newStatus.toLowerCase() === "inprogress") {
             const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.id)
             if (response.success) {
-                socket.emit("inprogress-update", ticket.id); // Emit update
-                socket.emit("unread-notifications", ticket.id); // Emit update
+                socket.emit("inprogress-update", ticket.user_id); // Emit update
+                socket.emit("unread-notifications", ticket.user_id); // Emit update
                 setStatus(newStatus);
 
 
@@ -75,6 +75,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
         }
     };
     useEffect(() => {
+        console.log(ticket)
         const fetchSpares = async () => {
             console.log(ticket.ticket_id)
 
