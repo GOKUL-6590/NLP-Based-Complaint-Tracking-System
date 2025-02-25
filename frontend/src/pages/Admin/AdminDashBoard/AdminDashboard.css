@@ -1,12 +1,15 @@
 .admin-dashboard {
     padding: 20px;
+    min-height: 100vh; /* Ensure full height for mobile scrolling */
 }
 
+/* Header */
 h2 {
     margin-bottom: 20px;
     font-size: 24px;
 }
 
+/* Dashboard Cards */
 .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -33,6 +36,7 @@ h2 {
     color: #333;
 }
 
+/* Dashboard Charts */
 .dashboard-charts {
     margin-top: 30px;
 }
@@ -43,6 +47,7 @@ h2 {
     color: #555;
 }
 
+/* Dashboard Links */
 .dashboard-links {
     margin-top: 30px;
     display: flex;
@@ -61,4 +66,101 @@ h2 {
 
 .dashboard-links button:hover {
     background: #0056b3;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller cards */
+        gap: 15px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .card h3 {
+        font-size: 16px;
+    }
+
+    .card p {
+        font-size: 18px;
+    }
+
+    .dashboard-charts {
+        margin-top: 20px;
+    }
+
+    .dashboard-charts h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .dashboard-links {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .dashboard-links button {
+        padding: 8px 15px;
+        font-size: 14px;
+        width: 100%; /* Full width for easier tapping */
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-dashboard {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr; /* Stack cards in one column */
+        gap: 12px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+    .card p {
+        font-size: 16px;
+    }
+
+    .dashboard-charts {
+        margin-top: 15px;
+    }
+
+    .dashboard-charts h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .dashboard-links {
+        gap: 6px;
+        margin-top: 15px;
+    }
+
+    .dashboard-links button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
