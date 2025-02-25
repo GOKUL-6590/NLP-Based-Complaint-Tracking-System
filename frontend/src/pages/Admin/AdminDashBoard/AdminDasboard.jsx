@@ -66,12 +66,12 @@ const AdminDashboard = () => {
                 <h3>Ticket Trends</h3>
                 <Chart options={chartOptions} series={chartSeries} type="line" height={300} />
             </div>
-            <div className="dashboard-links">
+            {/* <div className="dashboard-links">
                 <button onClick={() => navigate("/admin/users")}>Manage Users</button>
                 <button onClick={() => navigate("/admin/tickets")}>Manage Tickets</button>
                 <button onClick={() => navigate("/admin/reports")}>View Reports</button>
                 <button onClick={() => navigate("/admin/settings")}>Settings</button>
-            </div>
+            </div> */}
         </div>
     );
 };

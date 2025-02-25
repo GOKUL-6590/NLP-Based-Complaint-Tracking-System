@@ -144,6 +144,7 @@ const Home = () => {
         });
 
         setTimerData(updatedTimers);
+
     }, [activeTickets]);
 
     // useEffect(() => {
@@ -271,18 +272,39 @@ const Home = () => {
                                 <th>Status</th>
                                 <th>Priority</th>
                                 <th>Last Updated</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {activeTickets.map((ticket) => (
-                                <tr key={ticket.ticket_id} onClick={() => handleRowClick(ticket)} className="ticket-row">
-                                    <td>{ticket.ticket_id}</td>
-                                    <td>{ticket.description}</td>
-                                    <td>{ticket.status}</td>
-                                    <td>{ticket.priority}</td>
-                                    <td>{new Date(ticket.last_updated).toLocaleString()}</td>
-                                </tr>
-                            ))}
+                            {activeTickets.map((ticket) => {
+                                const ticketTimer = timerData[ticket.ticket_id] || { timeLeft: 0, isDisabled: true };
+                                return (
+                                    <tr key={ticket.ticket_id} onClick={() => setSelectedTicket(ticket)}>
+                                        <td>{ticket.ticket_id}</td>
+                                        <td>{ticket.description}</td>
+                                        <td>{ticket.status}</td>
+                                        <td>{ticket.priority}</td>
+                                        <td>{new Date(ticket.last_updated).toLocaleString("en-US", { timeZone: "UTC" })}</td>
+                                        <td>
+                                            {ticket.status.toLowerCase() === "in progress" && (
+                                                <>
+                                                    <p>
+                                                        Time left: {Math.floor(ticketTimer.timeLeft / 60)}:
+                                                        {String(ticketTimer.timeLeft % 60).padStart(2, "0")}
+                                                    </p>
+                                                    <button
+                                                        onClick={() => handleDispute(ticket.ticket_id)}
+                                                        className="dispute-button"
+                                                        disabled={ticketTimer.isDisabled}
+                                                    >
+                                                        Dispute Change
+                                                    </button>
+                                                </>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 )}

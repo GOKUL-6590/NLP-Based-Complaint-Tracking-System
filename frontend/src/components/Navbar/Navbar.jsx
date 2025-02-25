@@ -4,14 +4,11 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../../assets/ticket2.png";
-import io from "socket.io-client";
 import socket from "../socket";
-
-
-
 
 function Navbar({ children }) {
     const [collapsed, setCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // New state for mobile detection
     const location = useLocation();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
@@ -29,10 +26,9 @@ function Navbar({ children }) {
         { name: "Manage Users", path: "/admin/users", icon: "ri-group-line" },
         { name: "Manage Tickets", path: "/admin/tickets", icon: "ri-ticket-line" },
         { name: "Analytics & Reports", path: "/admin/reports", icon: "ri-bar-chart-line" },
-        { name: "Inventory", path: "/admin/inventory", icon: "ri-archive-line" },  
+        { name: "Inventory", path: "/admin/inventory", icon: "ri-archive-line" },
         { name: "Settings", path: "/settings", icon: "ri-settings-2-line" },
     ];
-
 
     const userMenu = [
         { name: "Dashboard", path: "/home", icon: "ri-dashboard-line" },
@@ -48,20 +44,26 @@ function Navbar({ children }) {
         { name: "Settings", path: "/settings", icon: "ri-settings-2-line" },
     ];
 
-    // Determine which menu to render based on role
-    const menuToRender = isAdmin
-        ? adminMenu
-        : isTechnician
-            ? technicianMenu
-            : userMenu;
+    const menuToRender = isAdmin ? adminMenu : isTechnician ? technicianMenu : userMenu;
 
     const [notifications, setNotifications] = useState(0);
-    useEffect(() => {
 
-        socket.emit("join", user.id); // Join room for real-time notifications
+    // Handle resize to detect mobile view
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768); // 768px as the mobile breakpoint
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    // Socket for real-time notifications
+    useEffect(() => {
+        socket.emit("join", user?.id);
 
         socket.on("unread-notifications", (data) => {
-            if (data.user_id === user.id) {
+            if (data.user_id === user?.id) {
                 setNotifications(data.count);
             }
         });
@@ -69,7 +71,7 @@ function Navbar({ children }) {
         return () => {
             socket.off("unread-notifications");
         };
-    }, []);
+    }, [user]);
 
     // Fetch unread notifications count
     useEffect(() => {
@@ -107,10 +109,12 @@ function Navbar({ children }) {
                             <img src={logo} alt="Logo" className="app-logo" />
                         </span>
                     ) : (
-                        <span className="app-name">
-                            <img src={logo} alt="Logo" className="collapsed-app-logo" />
-                            Tikify
-                        </span>
+                        <>
+                            <span className="app-name">
+                                <img src={logo} alt="Logo" className="collapsed-app-logo" />
+                                Tikify
+                            </span>
+                        </>
                     )}
                 </div>
                 <div className="menu">
@@ -122,7 +126,10 @@ function Navbar({ children }) {
                                 className={`menu-item ${isActive ? "active" : ""} ${collapsed ? "collapsed-menu-item" : ""
                                     }`}
                                 key={menu.name}
-                                onClick={() => navigate(menu.path)}
+                                onClick={() => {
+                                    navigate(menu.path);
+                                    if (isMobile) setCollapsed(true); // Collapse only on mobile
+                                }}
                             >
                                 <i className={`ri ${menu.icon}`}></i>
                                 {!collapsed && <span>{menu.name}</span>}
@@ -139,9 +146,12 @@ function Navbar({ children }) {
                     <div className="topbar-left">
                         <button onClick={() => setCollapsed(!collapsed)} className="collapse-btn">
                             {collapsed ? (
-                                <i className="ri-arrow-right-s-line"></i>
+                                <>
+                                    <i className="ri-menu-line mobile-nav"></i>
+                                    <i className="ri-arrow-right-s-line desktop-nav"></i>
+                                </>
                             ) : (
-                                <i className="ri-arrow-left-s-line"></i>
+                                <i className="ri-arrow-left-s-line close-nav"></i>
                             )}
                         </button>
                     </div>

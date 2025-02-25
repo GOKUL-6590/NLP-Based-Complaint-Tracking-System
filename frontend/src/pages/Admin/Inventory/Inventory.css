@@ -5,9 +5,9 @@
     padding: 20px;
     border-radius: 8px;
     background: #f8f9fa;
-    /* Light background for better contrast */
 }
 
+/* Header */
 .inventory-container h2 {
     text-align: center;
     color: #007bff;
@@ -28,31 +28,14 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.inventory-list ul {
-    list-style: none;
-    padding: 0;
-}
-
-.inventory-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.inventory-list li:last-child {
-    border-bottom: none;
-}
-
 /* Right Column */
 .right-column {
     height: 80vh;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    /* Increase gap */
     justify-content: space-between;
-    /* Ensures spacing between elements */
 }
-
 
 /* Technician Requests */
 .technician-requests {
@@ -62,20 +45,6 @@
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow-y: scroll;
-}
-
-.technician-requests ul {
-    list-style: none;
-    padding: 0;
-}
-
-.technician-requests li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.technician-requests li:last-child {
-    border-bottom: none;
 }
 
 /* Inventory Form */
@@ -128,13 +97,11 @@
     margin-bottom: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     table-layout: fixed;
-    /* Ensures columns adjust to fit the container */
 }
 
 .inventory-table th,
 .inventory-table td {
     padding: 12px;
-    /* Adjust the padding if needed */
     text-align: left;
     border-bottom: 1px solid #e9ecef;
     color: #2d3436;
@@ -142,13 +109,11 @@
 
 .inventory-table th {
     background-color: #f8f9fa;
-    /* Light header background */
     font-weight: 600;
 }
 
 .inventory-table tr:hover {
     background-color: #f8f9fa;
-    /* Light hover effect */
     cursor: pointer;
 }
 
@@ -177,4 +142,135 @@
 
 .reject-btn:hover {
     background-color: darkred;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .inventory-container {
+        height: auto; /* Allow natural height */
+        padding: 15px;
+        margin: 10px auto;
+        overflow-y: auto; /* Enable scrolling */
+    }
+
+    .inventory-container h2 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .inventory-grid {
+        grid-template-columns: 1fr; /* Stack columns vertically */
+        gap: 15px;
+    }
+
+    .inventory-list {
+        padding: 12px;
+    }
+
+    .right-column {
+        height: auto; /* Remove fixed height */
+        gap: 15px;
+    }
+
+    .technician-requests {
+        height: auto; /* Allow natural height */
+        min-height: 200px; /* Ensure visibility */
+        padding: 12px;
+    }
+
+    .inventory-form {
+        height: auto; /* Allow natural height */
+        min-height: 250px; /* Ensure form is usable */
+        padding: 12px;
+    }
+
+    .inventory-form input,
+    .inventory-form textarea {
+        padding: 8px;
+        margin: 4px 0;
+    }
+
+    .inventory-form textarea {
+        min-height: 50px;
+    }
+
+    .inventory-form button {
+        padding: 8px;
+    }
+
+    .inventory-table th,
+    .inventory-table td {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .accept-btn,
+    .reject-btn {
+        padding: 4px 8px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .inventory-container {
+        padding: 10px;
+        margin: 5px auto;
+    }
+
+    .inventory-container h2 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+    }
+
+    .inventory-grid {
+        gap: 12px;
+    }
+
+    .inventory-list {
+        padding: 10px;
+    }
+
+    .technician-requests {
+        padding: 10px;
+        min-height: 150px;
+    }
+
+    .inventory-form {
+        padding: 10px;
+        min-height: 200px;
+    }
+
+    .inventory-form input,
+    .inventory-form textarea {
+        padding: 6px;
+        margin: 3px 0;
+        font-size: 0.9rem;
+    }
+
+    .inventory-form textarea {
+        min-height: 40px;
+    }
+
+    .inventory-form button {
+        padding: 6px;
+        font-size: 0.9rem;
+    }
+
+    .inventory-table th,
+    .inventory-table td {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    /* Hide less critical columns on small screens */
+    .inventory-table th:nth-child(4), /* Requested At */
+    .inventory-table td:nth-child(4) {
+        display: none;
+    }
+
+    .accept-btn,
+    .reject-btn {
+        padding: 3px 6px;
+        font-size: 0.85rem;
+    }
 }

@@ -48,7 +48,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
     const handleStatusUpdate = async (newStatus) => {
         setStatus(newStatus);
         // onStatusUpdate(ticket.ticket_id, newStatus);
-        console.log("Updated Status:", newStatus);  // Debugging
+        console.log("Updated Status:", ticket);  // Debugging
 
 
         // Start timer if status is updated to 'In Progress'
@@ -122,8 +122,8 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                                 </div>
                                 <div className="modal-section">
                                     <h4>Assigned To</h4>
-                                    <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
-                                    <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
+                                    <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
+                                    <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
                                 </div>
                             </>
                         ) : isTechnician ? (
@@ -135,8 +135,8 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                         ) : (
                             <div className="modal-section">
                                 <h4>Assigned To</h4>
-                                <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
-                                <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
+                                <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
+                                <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
                             </div>
                         )
                     }

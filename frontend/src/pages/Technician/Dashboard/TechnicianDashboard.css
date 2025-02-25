@@ -6,6 +6,8 @@
     font-family: 'Poppins', sans-serif;
     background-color: #f5f7fa;
     color: #333;
+    min-height: 100vh;
+    /* Ensure it takes full height */
 }
 
 /* First Row Layout */
@@ -13,6 +15,10 @@
     display: grid;
     grid-template-columns: 30% 70%;
     gap: 20px;
+}
+
+.technician-dashboard h1 {
+    font-size: 28px;
 }
 
 /* Calendar Container */
@@ -28,6 +34,8 @@
 .elegant-calendar {
     border: none;
     font-size: 16px;
+    width: 100%;
+    /* Ensure calendar fits container */
 }
 
 .elegant-calendar .react-calendar__tile {
@@ -50,12 +58,10 @@
 .stats-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    /* background-color: #fff; */
+    gap: 20px;
+    /* Reduced gap for mobile */
     padding: 5px;
     border-radius: 12px;
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd; */
 }
 
 .metric-item {
@@ -100,10 +106,6 @@
     max-height: 400px;
 }
 
-.dictionary-item {
-    margin-bottom: 10px;
-}
-
 .chart-container {
     background-color: #fff;
     padding: 20px;
@@ -112,15 +114,81 @@
     border: 1px solid #ddd;
 }
 
-/* Responsiveness */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
 
-    .first-row,
-    .second-row {
+    /* Adjust first row for tablets and larger mobiles */
+    .first-row-tech {
         grid-template-columns: 1fr;
+        /* Stack calendar and stats vertically */
+        gap: 15px;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        /* Keep 2-column stats layout */
+        gap: 15px;
     }
 
     .metric-item {
-        width: 100%;
+        padding: 10px;
+        /* Reduce padding for smaller screens */
+    }
+
+    .metric-item h2 {
+        font-size: 20px;
+        /* Smaller font for mobile */
+    }
+
+    .metric-item span {
+        font-size: 12px;
+    }
+
+    /* Adjust second row */
+    .second-row-tech {
+        grid-template-columns: 1fr;
+        /* Stack dictionary and chart vertically */
+        gap: 15px;
+    }
+
+    .dictionary-container {
+        max-height: 300px;
+        /* Reduce height for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Further adjustments for small mobile screens */
+    .technician-dashboard {
+        padding: 10px;
+        /* Reduce padding */
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        /* Stack stats in one column */
+        gap: 10px;
+    }
+
+    .metric-item {
+        padding: 8px;
+    }
+
+    .metric-item h2 {
+        font-size: 18px;
+    }
+
+    .metric-item span {
+        font-size: 11px;
+    }
+
+    .calendar-container {
+        padding: 15px;
+    }
+
+    .dictionary-container,
+    .chart-container {
+        padding: 15px;
     }
 }

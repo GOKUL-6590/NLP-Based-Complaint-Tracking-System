@@ -2,25 +2,50 @@
 .home-content-wrapper {
     margin: auto;
     width: 100%;
-
-    /* Ensures no space is added on the right when the sidebar is collapsed */
     padding: 20px;
-
-    /* Ensure the content takes up the full width of the container */
     transition: margin 0.3s ease-in-out;
 }
 
 .home-content-wrapper.collapsed {
     margin-left: 60px;
-    /* Adjust this width to your sidebar collapsed width */
     margin-right: 60px;
-    /* Adjust if necessary */
 }
 
-/* Welcome Section */
-.welcome-section h1 {
-    font-size: 24px;
+/* Dashboard Header */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+}
+
+.dashboard-header h2 {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.create-ticket-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.create-ticket-btn:hover {
+    background-color: #0056b3;
+}
+
+.plus-icon {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 8px;
 }
 
 /* Dashboard Statistics Section */
@@ -49,46 +74,6 @@
     font-weight: bold;
     color: #2c3e50;
 }
-
-/* Dashboard Header */
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.dashboard-header h2 {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.create-ticket-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #007bff;
-    /* Adjust color as needed */
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.create-ticket-btn:hover {
-    background-color: #0056b3;
-}
-
-.plus-icon {
-    font-size: 18px;
-    font-weight: bold;
-    margin-right: 8px;
-    /* Adds space between the icon and the text */
-}
-
 
 /* Active Tickets Table */
 .active-tickets {
@@ -127,7 +112,6 @@
 
 .dispute-button {
     background-color: #f44336;
-    /* Red color */
     color: white;
     padding: 8px 16px;
     border: none;
@@ -139,7 +123,6 @@
 
 .dispute-button:hover {
     background-color: #d32f2f;
-    /* Darker red for hover effect */
 }
 
 .dispute-button:disabled {
@@ -151,7 +134,6 @@
     font-size: 16px;
     font-weight: bold;
     color: #00796b;
-    /* Green color for active timer */
     margin-right: 10px;
 }
 
@@ -160,19 +142,153 @@
     font-weight: normal;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .dashboard-stats {
-        grid-template-columns: 1fr 1fr;
+    .home-content-wrapper {
+        padding: 15px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .dashboard-header h2 {
+        font-size: 20px;
     }
 
     .create-ticket-btn {
         padding: 8px 16px;
         font-size: 14px;
+        width: 100%;
+        /* Full width for easier tapping */
+    }
+
+    .plus-icon {
+        font-size: 16px;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+        /* 2 columns */
+        gap: 15px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-card h3 {
+        font-size: 16px;
+    }
+
+    .stat-card p {
+        font-size: 20px;
+    }
+
+    .active-tickets {
+        margin-top: 20px;
+    }
+
+    .tickets-table {
+        font-size: 12px;
     }
 
     .tickets-table th,
     .tickets-table td {
+        padding: 10px;
+    }
+
+    .time-left {
+        font-size: 14px;
+        margin-right: 8px;
+    }
+
+    .time-left span {
+        font-size: 16px;
+    }
+
+    .dispute-button {
+        padding: 6px 12px;
         font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-content-wrapper {
+        padding: 10px;
+    }
+
+    .dashboard-header {
+        gap: 8px;
+    }
+
+    .dashboard-header h2 {
+        font-size: 18px;
+    }
+
+    .create-ticket-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .plus-icon {
+        font-size: 14px;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        /* 1 column */
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-card h3 {
+        font-size: 14px;
+    }
+
+    .stat-card p {
+        font-size: 18px;
+    }
+
+    .active-tickets {
+        margin-top: 15px;
+    }
+
+    .tickets-table {
+        font-size: 11px;
+    }
+
+    .tickets-table th,
+    .tickets-table td {
+        padding: 8px;
+    }
+
+    /* Hide less critical columns on small screens */
+    .tickets-table th:nth-child(4),
+    /* Priority */
+    .tickets-table td:nth-child(4),
+    .tickets-table th:nth-child(5),
+    /* Last Updated */
+    .tickets-table td:nth-child(5) {
+        display: none;
+    }
+
+    .time-left {
+        font-size: 12px;
+        margin-right: 6px;
+    }
+
+    .time-left span {
+        font-size: 14px;
+    }
+
+    .dispute-button {
+        padding: 5px 10px;
+        font-size: 11px;
     }
 }

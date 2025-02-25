@@ -114,23 +114,100 @@
     background-color: #5e54d2;
 }
 
-/* Responsive Design */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .work-history-container {
         padding: 16px;
+        min-height: auto; /* Allow natural height */
+    }
+
+    .work-history-container h2 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
     }
 
     .filter-container {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+        justify-content: center;
+    }
+
+    .filter-container label {
+        font-size: 0.9rem;
     }
 
     .filter-container select {
         width: 100%;
+        padding: 6px 10px;
+        font-size: 0.9rem;
     }
 
     .table-wrapper {
         padding: 12px;
+        min-height: auto; /* Allow natural height */
+        max-height: none; /* Remove max height for scrolling */
+    }
+
+    .work-table th,
+    .work-table td {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .view-ticket {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .work-history-container {
+        padding: 12px;
+    }
+
+    .work-history-container h2 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .filter-container {
+        gap: 6px;
+    }
+
+    .filter-container label {
+        font-size: 0.85rem;
+    }
+
+    .filter-container select {
+        padding: 5px 8px;
+        font-size: 0.85rem;
+    }
+
+    .table-wrapper {
+        padding: 10px;
+    }
+
+    .work-table {
+        font-size: 0.8rem;
+    }
+
+    .work-table th,
+    .work-table td {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+    .view-ticket {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+
+    /* Ensure table remains usable on small screens */
+    .work-table th:nth-child(4),
+    .work-table td:nth-child(4),
+    .work-table th:nth-child(7),
+    .work-table td:nth-child(7) {
+        display: none; /* Hide Priority and Created At on very small screens */
     }
 }
