@@ -17,16 +17,41 @@ body {
 
 .container {
     display: flex;
+    flex-direction: column;
+    /* Stack header and register vertically */
     justify-content: center;
     align-items: center;
     width: 100%;
 }
 
+/* Website Header Styling */
+.website-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.login-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    margin-left: 10px;
+}
+
+.website-name {
+    font-size: 40px;
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+}
+
 /* Registration Form Styling */
 .register {
     width: 100%;
-    max-width: 450px;
-    padding: 30px;
+    max-width: 700px;
+    /* Wider to fit horizontal layout */
+    padding: 25px;
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -45,25 +70,37 @@ body {
     margin-bottom: 20px;
 }
 
+/* Form Row for Horizontal Layout */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Space between rows */
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    /* Space between fields in a row */
+}
+
 .register label {
     font-size: 14px;
     font-weight: 500;
     color: #2c3e50;
     margin-bottom: 6px;
-    display: inline-block;
-    /* Change this line */
-    text-align: left;
-    /* Ensure left alignment */
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    /* Ensure it spans the full width */
+    /* Each label/input takes equal width in row */
+    text-align: left;
 }
-
 
 .register input,
 .register select {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 16px;
+    padding: 12px;
     border: 1px solid #dfe4ea;
     border-radius: 8px;
     font-size: 16px;
@@ -95,6 +132,8 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 10px;
+    /* Space above button */
 }
 
 .register button:hover {
@@ -111,7 +150,7 @@ body {
     text-align: center;
     font-size: 14px;
     color: #7f8c8d;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .register p a {
@@ -123,10 +162,18 @@ body {
     text-decoration: underline;
 }
 
-/* Small screen responsiveness */
+/* Responsive Design */
 @media (max-width: 768px) {
     .register {
-        padding: 25px;
+        max-width: 90%;
+        /* Slightly narrower on mobile */
+        padding: 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        /* Stack fields vertically on mobile */
+        gap: 10px;
     }
 
     .register h2 {
@@ -142,16 +189,20 @@ body {
 
 @media (max-width: 480px) {
     .register {
-        padding: 20px;
+        padding: 15px;
     }
 
     .register h2 {
         font-size: 24px;
     }
 
-    .register input,
-    .register select,
-    .register button {
-        font-size: 14px;
+    .website-name {
+        font-size: 32px;
+        /* Slightly smaller on tiny screens */
+    }
+
+    .login-logo {
+        width: 32px;
+        height: 32px;
     }
 }

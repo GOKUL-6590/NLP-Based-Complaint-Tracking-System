@@ -77,3 +77,10 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+@media (max-width: 768px) {
+    .header-buttons button {
+        margin-bottom: 5px;
+    }
+
+}

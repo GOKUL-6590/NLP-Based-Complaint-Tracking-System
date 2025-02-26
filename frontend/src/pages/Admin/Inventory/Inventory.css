@@ -8,10 +8,7 @@
 }
 
 /* Header */
-.inventory-container h2 {
-    text-align: center;
-    color: #007bff;
-}
+
 
 /* Grid Layout */
 .inventory-grid {
@@ -147,10 +144,12 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .inventory-container {
-        height: auto; /* Allow natural height */
+        height: auto;
+        /* Allow natural height */
         padding: 15px;
         margin: 10px auto;
-        overflow-y: auto; /* Enable scrolling */
+        overflow-y: auto;
+        /* Enable scrolling */
     }
 
     .inventory-container h2 {
@@ -159,7 +158,8 @@
     }
 
     .inventory-grid {
-        grid-template-columns: 1fr; /* Stack columns vertically */
+        grid-template-columns: 1fr;
+        /* Stack columns vertically */
         gap: 15px;
     }
 
@@ -168,19 +168,24 @@
     }
 
     .right-column {
-        height: auto; /* Remove fixed height */
+        height: auto;
+        /* Remove fixed height */
         gap: 15px;
     }
 
     .technician-requests {
-        height: auto; /* Allow natural height */
-        min-height: 200px; /* Ensure visibility */
+        height: auto;
+        /* Allow natural height */
+        min-height: 200px;
+        /* Ensure visibility */
         padding: 12px;
     }
 
     .inventory-form {
-        height: auto; /* Allow natural height */
-        min-height: 250px; /* Ensure form is usable */
+        height: auto;
+        /* Allow natural height */
+        min-height: 250px;
+        /* Ensure form is usable */
         padding: 12px;
     }
 
@@ -263,7 +268,8 @@
     }
 
     /* Hide less critical columns on small screens */
-    .inventory-table th:nth-child(4), /* Requested At */
+    .inventory-table th:nth-child(4),
+    /* Requested At */
     .inventory-table td:nth-child(4) {
         display: none;
     }

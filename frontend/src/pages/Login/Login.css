@@ -1,9 +1,12 @@
+/* Container adjustments */
 .container {
     display: flex;
+    flex-direction: column;
+    /* Stack children vertically */
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f5f5f5;
+    width: 100vw;
 }
 
 .login {
@@ -76,4 +79,31 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* Styles for website header outside login */
+.website-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    /* Space between header and login container */
+}
+
+.login-logo {
+    width: 40px;
+    /* Slightly larger for prominence outside container */
+    height: 40px;
+    margin-right: 12px;
+    margin-left: 10px;
+    /* Space between logo and name */
+}
+
+.website-name {
+    font-size: 40px;
+    /* Larger for branding outside container */
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
 }

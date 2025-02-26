@@ -7,8 +7,9 @@ import logo from "../../assets/ticket2.png";
 import socket from "../socket";
 
 function Navbar({ children }) {
-    const [collapsed, setCollapsed] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // New state for mobile detection
+    // Set collapsed to true if mobile (≤ 768px), false if desktop (> 768px)
+    const [collapsed, setCollapsed] = useState(window.innerWidth <= 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const location = useLocation();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.user);
@@ -51,7 +52,10 @@ function Navbar({ children }) {
     // Handle resize to detect mobile view
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768); // 768px as the mobile breakpoint
+            const mobile = window.innerWidth <= 768;
+            setIsMobile(mobile);
+            // Optional: Reset collapsed state on resize (comment out if not desired)
+            // setCollapsed(mobile);
         };
 
         window.addEventListener("resize", handleResize);
@@ -109,12 +113,10 @@ function Navbar({ children }) {
                             <img src={logo} alt="Logo" className="app-logo" />
                         </span>
                     ) : (
-                        <>
-                            <span className="app-name">
-                                <img src={logo} alt="Logo" className="collapsed-app-logo" />
-                                Tikify
-                            </span>
-                        </>
+                        <span className="app-name">
+                            <img src={logo} alt="Logo" className="collapsed-app-logo" />
+                            Tikify
+                        </span>
                     )}
                 </div>
                 <div className="menu">

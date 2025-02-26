@@ -102,7 +102,9 @@ const ManageUsers = () => {
 
     return (
         <div className="manage-users-container">
+            
             <div className="column-container">
+
                 <div className="first-column">
                     <div className="first-row">
                         <h2>Technician Approval</h2>
