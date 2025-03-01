@@ -22,6 +22,22 @@
     padding-bottom: 5px;
 }
 
+.page-title-1.animate-on-load {
+    animation: slideInFromTop 0.5s ease-out forwards;
+}
+
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Ticket Slots Container */
 .ticket-slots {
     width: 85%;
@@ -29,10 +45,21 @@
     display: flex;
     gap: 30px;
     justify-content: flex-start;
-    flex-wrap: nowrap;
-    /* Ensure horizontal layout */
-    overflow-x: auto;
-    /* Scroll if slots exceed width */
+    flex-wrap: wrap;
+}
+
+.ticket-slots.animate-on-load {
+    animation: fadeIn 0.7s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Ticket Slot */
@@ -47,15 +74,37 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: left;
     position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-    /* Added opacity transition */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     min-width: 250px;
-    cursor: grab;
-    /* Indicates draggability */
 }
 
-.ticket-slot:active {
-    cursor: grabbing;
+.ticket-slot.animate-on-load {
+    animation: slideInFromBottom 0.5s ease-out forwards;
+}
+
+/* Staggered animation for ticket slots */
+.ticket-slots .ticket-slot.animate-on-load:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.ticket-slots .ticket-slot.animate-on-load:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.ticket-slots .ticket-slot.animate-on-load:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes slideInFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .ticket-slot:hover {
@@ -143,9 +192,11 @@
     text-decoration: none;
     margin-left: auto;
     margin-top: auto;
+    transition: color 0.2s ease;
 }
 
 .view-details:hover {
+    color: #0056b3;
     text-decoration: underline;
 }
 
@@ -172,23 +223,18 @@
 @media (max-width: 768px) {
     .assigned-tickets-container {
         height: auto;
-        /* Allow height to adjust */
         padding: 20px 0;
         justify-content: flex-start;
-        /* Align content at top */
     }
 
     .page-title-1 {
         font-size: 1.8rem;
-        /* Slightly smaller title */
         margin-bottom: 30px;
-        /* Reduce spacing */
         width: 90%;
     }
 
     .ticket-slots {
         flex-direction: column;
-        /* Stack on mobile */
         align-items: center;
         height: auto;
         width: 90%;
@@ -201,8 +247,6 @@
         width: 100%;
         padding: 15px;
         min-height: 200px;
-        cursor: default;
-        /* Disable dragging on mobile */
     }
 
     .ticket-title {

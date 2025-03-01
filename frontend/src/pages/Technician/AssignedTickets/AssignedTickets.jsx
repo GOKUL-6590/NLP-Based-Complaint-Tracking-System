@@ -5,9 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import TicketModal from "../../../components/EditTicket/EditTicket";
 import { FaTimesCircle, FaTag, FaExclamationCircle, FaMapMarkerAlt, FaClipboardCheck, FaFlag } from "react-icons/fa";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import { SortableContext, useSortable, horizontalListSortingStrategy } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 function AssignedTickets() {
     const dispatch = useDispatch();
@@ -20,6 +17,7 @@ function AssignedTickets() {
         { ticket: null, title: "Ticket Slot 2" },
         { ticket: null, title: "Emergency Ticket" }
     ]);
+    const [isInitialLoad, setIsInitialLoad] = useState(true); // New state for initial load
 
     useEffect(() => {
         const getTickets = async () => {
@@ -37,59 +35,29 @@ function AssignedTickets() {
                 ];
                 setSlotData(newSlotData);
             }
+            // After data is fetched, mark initial load as complete
+            setTimeout(() => setIsInitialLoad(false), 1000); // Delay to match animation duration
         };
         getTickets();
     }, [dispatch, user.id]);
 
     const openModal = (ticket) => {
+        console.log("Opening modal for ticket:", ticket);
         setSelectedTicket(ticket);
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
+        console.log("Closing modal");
         setSelectedTicket(null);
         setIsModalOpen(false);
     };
 
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-        if (!over || active.id === over.id) return;
-
-        const sourceIndex = parseInt(active.id.split('-')[1]);
-        const destIndex = parseInt(over.id.split('-')[1]);
-
-        const newSlotData = [...slotData];
-        const [movedSlot] = newSlotData.splice(sourceIndex, 1);
-        newSlotData.splice(destIndex, 0, movedSlot);
-        setSlotData(newSlotData);
-    };
-
-    const SortableTicketSlot = ({ slot, index }) => {
-        const {
-            attributes,
-            listeners,
-            setNodeRef,
-            transform,
-            transition,
-            isDragging
-        } = useSortable({ id: `slot-${index}` });
-
-        const style = {
-            transform: CSS.Transform.toString(transform),
-            transition,
-            opacity: isDragging ? 0.5 : 1,
-        };
-
+    const TicketSlot = ({ slot }) => {
         const ticket = slot.ticket;
 
         return (
-            <div
-                ref={setNodeRef}
-                style={style}
-                {...attributes}
-                {...listeners}
-                className="ticket-slot"
-            >
+            <div className={`ticket-slot ${isInitialLoad ? "animate-on-load" : ""}`}>
                 <h3 className="ticket-title">{slot.title}</h3>
                 {ticket ? (
                     <>
@@ -104,7 +72,12 @@ function AssignedTickets() {
                             </p>
                             <p><FaMapMarkerAlt className="icon" /><strong>Venue:</strong> {ticket.venue}</p>
                         </div>
-                        <p className="view-details" onClick={() => openModal(ticket)}>View Details</p>
+                        <p 
+                            className="view-details" 
+                            onClick={() => openModal(ticket)}
+                        >
+                            View Details
+                        </p>
                     </>
                 ) : (
                     <div className="empty-slot">
@@ -118,16 +91,12 @@ function AssignedTickets() {
 
     return (
         <div className="assigned-tickets-container">
-            <h2 className="page-title-1">Assigned Tickets</h2>
-            <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={slotData.map((_, index) => `slot-${index}`)} strategy={horizontalListSortingStrategy}>
-                    <div className="ticket-slots">
-                        {slotData.map((slot, index) => (
-                            <SortableTicketSlot key={index} slot={slot} index={index} />
-                        ))}
-                    </div>
-                </SortableContext>
-            </DndContext>
+            <h2 className={`page-title-1 ${isInitialLoad ? "animate-on-load" : ""}`}>Assigned Tickets</h2>
+            <div className={`ticket-slots ${isInitialLoad ? "animate-on-load" : ""}`}>
+                {slotData.map((slot, index) => (
+                    <TicketSlot key={index} slot={slot} />
+                ))}
+            </div>
 
             {isModalOpen && <TicketModal ticket={selectedTicket} onClose={closeModal} />}
         </div>
