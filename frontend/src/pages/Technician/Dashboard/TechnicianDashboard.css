@@ -1,69 +1,90 @@
+/* Page Layout */
 .technician-dashboard {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 20px;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     background-color: #f5f7fa;
     color: #333;
     min-height: 100vh;
-    /* Ensure it takes full height */
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    color: #fff;
+    animation: slideInFromTop 0.5s ease-out;
+    /* Slide from top */
+}
+
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-header h1 {
+    font-size: 26px;
+    margin: 0;
+}
+
+.dashboard-header .current-date {
+    font-size: 16px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* First Row Layout */
 .first-row-tech {
-    display: grid;
-    grid-template-columns: 30% 70%;
+    display: flex;
+    justify-content: center;
     gap: 20px;
+    animation: fadeIn 0.7s ease-out 0.2s forwards;
+    /* Fade-in with delay */
+    opacity: 0;
+    /* Start hidden */
 }
 
-.technician-dashboard h1 {
-    font-size: 28px;
-}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
 
-/* Calendar Container */
-.calendar-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-.elegant-calendar {
-    border: none;
-    font-size: 16px;
-    width: 100%;
-    /* Ensure calendar fits container */
-}
-
-.elegant-calendar .react-calendar__tile {
-    padding: 10px;
-    border-radius: 6px;
-    transition: background 0.2s, color 0.2s;
-}
-
-.elegant-calendar .react-calendar__tile:hover {
-    background-color: #007bff;
-    color: #fff;
-}
-
-.elegant-calendar .react-calendar__tile--active {
-    background-color: #0056b3;
-    color: #fff;
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Stats Container */
 .stats-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    /* Reduced gap for mobile */
-    padding: 5px;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 15px;
     border-radius: 12px;
+    width: 100vw;
 }
 
+/* Metric Item */
 .metric-item {
     background-color: #ffffff;
     padding: 15px;
@@ -71,6 +92,39 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.2s, box-shadow 0.2s;
+    animation: slideInFromBottom 0.5s ease-out forwards;
+    /* Slide from bottom */
+    opacity: 0;
+    /* Start hidden */
+}
+
+/* Staggered animation for metric items */
+.metric-item:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.metric-item:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.metric-item:nth-child(3) {
+    animation-delay: 0.5s;
+}
+
+.metric-item:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+@keyframes slideInFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .metric-item:hover {
@@ -79,7 +133,7 @@
 }
 
 .metric-item h2 {
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 5px;
     color: #007bff;
 }
@@ -94,8 +148,13 @@
     display: grid;
     grid-template-columns: 40% 60%;
     gap: 20px;
+    animation: slideInFromBottom 0.7s ease-out 0.4s forwards;
+    /* Slide from bottom with delay */
+    opacity: 0;
+    /* Start hidden */
 }
 
+/* Dictionary Container */
 .dictionary-container {
     background-color: #fff;
     padding: 20px;
@@ -103,76 +162,147 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
     overflow-y: auto;
-    max-height: 400px;
+    margin-right: 25px;
 }
 
+/* Technician Cards Container */
+.technician-cards-container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+/* Technician Card */
+.technician-card {
+    width: 100px;
+    height: 150px;
+    background: linear-gradient(135deg, #e6f0ff, #d9e8ff);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    flex-shrink: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    /* Fade-in for cards */
+    opacity: 0;
+    /* Start hidden */
+}
+
+/* Staggered animation for technician cards */
+.technician-cards-container .technician-card:nth-child(1) {
+    animation-delay: 0.5s;
+}
+
+.technician-cards-container .technician-card:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+.technician-cards-container .technician-card:nth-child(3) {
+    animation-delay: 0.7s;
+}
+
+.technician-cards-container .technician-card:nth-child(n+4) {
+    animation-delay: 0.8s;
+}
+
+.technician-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.technician-card .profile-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.technician-card .profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.technician-card .clock-icon {
+    font-size: 20px;
+    color: #007bff;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.technician-card .technician-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.technician-card .technician-role {
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+}
+
+/* Chart Container */
 .chart-container {
     background-color: #fff;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
+    margin-right: 5px;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 20px;
+        height: 70px;
+    }
 
-    /* Adjust first row for tablets and larger mobiles */
+    .dashboard-header h1 {
+        font-size: 22px;
+    }
+
+    .dashboard-header .current-date {
+        font-size: 14px;
+    }
+
     .first-row-tech {
-        grid-template-columns: 1fr;
-        /* Stack calendar and stats vertically */
+        flex-direction: column;
+        align-items: center;
         gap: 15px;
     }
 
     .stats-container {
         grid-template-columns: repeat(2, 1fr);
-        /* Keep 2-column stats layout */
-        gap: 15px;
+        width: 90%;
+        gap: 12px;
     }
 
     .metric-item {
-        padding: 10px;
-        /* Reduce padding for smaller screens */
-    }
-
-    .metric-item h2 {
-        font-size: 20px;
-        /* Smaller font for mobile */
-    }
-
-    .metric-item span {
-        font-size: 12px;
-    }
-
-    /* Adjust second row */
-    .second-row-tech {
-        grid-template-columns: 1fr;
-        /* Stack dictionary and chart vertically */
-        gap: 15px;
-    }
-
-    .dictionary-container {
-        max-height: 300px;
-        /* Reduce height for mobile */
-    }
-}
-
-@media (max-width: 480px) {
-
-    /* Further adjustments for small mobile screens */
-    .technician-dashboard {
-        padding: 10px;
-        /* Reduce padding */
-    }
-
-    .stats-container {
-        grid-template-columns: 1fr;
-        /* Stack stats in one column */
-        gap: 10px;
-    }
-
-    .metric-item {
-        padding: 8px;
+        padding: 12px;
     }
 
     .metric-item h2 {
@@ -180,15 +310,105 @@
     }
 
     .metric-item span {
-        font-size: 11px;
+        font-size: 12px;
     }
 
-    .calendar-container {
-        padding: 15px;
+    .second-row-tech {
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 
     .dictionary-container,
     .chart-container {
-        padding: 15px;
+        max-height: 300px;
+        margin-right: 0;
+    }
+
+    .technician-card {
+        width: 90px;
+        height: 130px;
+        padding: 8px;
+    }
+
+    .technician-card .profile-placeholder {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+
+    .technician-card .technician-name {
+        font-size: 13px;
+        margin-top: 8px;
+    }
+
+    .technician-card .technician-role {
+        font-size: 10px;
+    }
+
+    .technician-card .clock-icon {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .technician-dashboard {
+        padding: 10px;
+    }
+
+    .dashboard-header {
+        padding: 10px 15px;
+        height: 80px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 20px;
+    }
+
+    .dashboard-header .current-date {
+        font-size: 12px;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .metric-item {
+        padding: 10px;
+    }
+
+    .metric-item h2 {
+        font-size: 16px;
+    }
+
+    .metric-item span {
+        font-size: 11px;
+    }
+
+    .technician-card {
+        width: 80px;
+        height: 120px;
+        padding: 8px;
+    }
+
+    .technician-card .profile-placeholder {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .technician-card .technician-name {
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    .technician-card .technician-role {
+        font-size: 9px;
+    }
+
+    .technician-card .clock-icon {
+        font-size: 16px;
+        top: 4px;
+        right: 4px;
     }
 }

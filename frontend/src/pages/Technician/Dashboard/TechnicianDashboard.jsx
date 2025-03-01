@@ -1,78 +1,38 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import Chart from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
-import { Calendar } from "react-calendar"; // Install with `npm install react-calendar`
-import "react-calendar/dist/Calendar.css";
 import "./TechnicianDashboard.css";
 import { getApprovedTechnicians } from "../../../service/adminService";
 import { getTechnicianStats } from "../../../service/TechnicianService";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
+import { FaClock } from "react-icons/fa";
+import TechnicianModal from "../../../components/TechnicianCard/TechnicianCard";
 
 function TechnicianDashboard() {
     const [stats, setStats] = useState({
         totalTickets: 0,
         resolvedToday: 0,
         highPriorityPending: 0,
+        inProgressTickets: 0,
     });
     const [chartData, setChartData] = useState(null);
-    const [assignedToday, setAssignedToday] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(new Date());
     const [approvedTechnicians, setApprovedTechnicians] = useState([]);
     const { user } = useSelector((state) => state.user);
-    const dispatch = useDispatch()
-
-    // useEffect(() => {
-    //     // Fetch dashboard statistics, today's tickets, and dictionary data
-    //     const fetchDashboardData = async () => {
-    //         try {
-    //             const technicianId = localStorage.getItem("technicianId");
-    //             // const statsResponse = await axios.get(
-    //             //     `http://localhost:5000/dashboard/stats?technician_id=${technicianId}`
-    //             // );
-    //             // const ticketsResponse = await axios.get(
-    //             //     `http://localhost:5000/tickets/assigned-today?technician_id=${technicianId}`
-    //             // );
-    //             const dictionaryResponse = await getApprovedTechnicians();
-    //             console.log(dictionaryResponse.technicians);
-
-    //             if (statsResponse.data.success) {
-    //                 setStats(statsResponse.data.stats);
-    //                 setChartData(statsResponse.data.chartData);
-    //             }
-
-    //             if (ticketsResponse.data.success) {
-    //                 setAssignedToday(ticketsResponse.data.tickets);
-    //             }
-
-    //             if (dictionaryResponse.success) {
-    //                 setApprovedTechnicians(dictionaryResponse.technicians);
-    //                 console.log(approvedTechnicians)
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to fetch dashboard data:", error);
-    //         }
-    //     };
-
-    //     fetchDashboardData();
-    // }, []);
+    const dispatch = useDispatch();
+    const [isTechModalOpen, setIsTechModalOpen] = useState(false);
+    const [selectedTechnician, setSelectedTechnician] = useState(null);
 
     useEffect(() => {
-
-
-
-
         if (user?.id) {
             fetchRealTimeStats();
             fetchDashboardData();
         }
-    }, [user?.id]); // Added user?.id as a dependency
+    }, [user?.id]);
 
     const fetchDashboardData = async () => {
         try {
             const dictionaryResponse = await getApprovedTechnicians();
-
             if (dictionaryResponse.success) {
                 console.log("Technicians fetched:", dictionaryResponse.technicians);
                 setApprovedTechnicians(dictionaryResponse.technicians);
@@ -83,39 +43,53 @@ function TechnicianDashboard() {
             console.error("Error fetching technicians:", error);
         }
     };
+
     const fetchRealTimeStats = async () => {
         try {
-            dispatch(showLoading())
-            const response = await getTechnicianStats(user?.id); // Call the function
-            dispatch(hideLoading())
+            dispatch(showLoading());
+            const response = await getTechnicianStats(user?.id);
+            dispatch(hideLoading());
             console.log(response);
             if (response.success) {
                 setStats(response.stats);
-    
-                // Transform chartData to the correct format
                 const transformedChartData = {
-                    labels: response.chartData.map(item => item.status), // Extract the status names
+                    labels: response.chartData.map(item => item.status),
                     datasets: [
                         {
-                            label: 'Ticket Status Overview',
-                            data: response.chartData.map(item => item.count), // Extract the count for each status
-                            backgroundColor: 'rgba(75,192,192,0.2)',
-                            borderColor: 'rgba(75,192,192,1)',
-                            borderWidth: 1
-                        }
-                    ]
+                            label: "Ticket Status Overview",
+                            data: response.chartData.map(item => item.count),
+                            backgroundColor: "rgba(75,192,192,0.2)",
+                            borderColor: "rgba(75,192,192,1)",
+                            borderWidth: 1,
+                        },
+                    ],
                 };
-    
                 setChartData(transformedChartData);
             } else {
                 console.error("Failed to fetch technician stats:", response.message);
             }
         } catch (error) {
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             console.error("Error fetching technician stats:", error);
         }
     };
 
+    const openTechModal = (technician) => {
+        setSelectedTechnician(technician);
+        setIsTechModalOpen(true);
+    };
+
+    const closeTechModal = () => {
+        setSelectedTechnician(null);
+        setIsTechModalOpen(false);
+    };
+
+    const getInitials = (name) => {
+        const words = name.split(" ");
+        return words.length > 1
+            ? `${words[0][0]}${words[1][0]}`
+            : words[0].slice(0, 2).toUpperCase();
+    };
 
     const chartOptions = {
         responsive: true,
@@ -127,49 +101,60 @@ function TechnicianDashboard() {
 
     return (
         <div className="technician-dashboard">
-            <h1>Technician Dashboard</h1>
+            <div className="dashboard-header">
+                <h1>Welcome, {user?.name || "Technician"}</h1>
+                <span className="current-date">{new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                })}</span>
+            </div>
 
-            {/* First Row: Calendar and Stats */}
             <div className="dashboard-row first-row-tech">
-                <div className="calendar-container">
-                    <h2>Calendar View</h2>
-                    <Calendar
-                        onChange={setSelectedDate}
-                        value={selectedDate}
-                        className="react-calendar elegant-calendar"
-                    />
-                    <p>
-                        Selected Date: <strong>{selectedDate.toDateString()}</strong>
-                    </p>
-                </div>
                 <div className="stats-container">
                     <div className="metric-item">
                         <h2>{stats.totalTickets}</h2>
-                        <span>Total Assigned Tickets</span>
+                        <span>Total Assigned</span>
                     </div>
                     <div className="metric-item">
                         <h2>{stats.resolvedToday}</h2>
-                        <span>Tickets Resolved Today</span>
+                        <span>Resolved Today</span>
                     </div>
                     <div className="metric-item">
                         <h2>{stats.highPriorityPending}</h2>
-                        <span>High Priority Pending</span>
+                        <span>High Priority</span>
                     </div>
                     <div className="metric-item">
                         <h2>{stats.inProgressTickets}</h2>
-                        <span>In Progress Tickets</span>
+                        <span>In Progress</span>
                     </div>
                 </div>
             </div>
 
-            {/* Second Row: Dictionary and Chart */}
             <div className="dashboard-row second-row-tech">
                 <div className="dictionary-container">
                     <h2>Technician Dictionary</h2>
                     <div className="technician-cards-container">
                         {approvedTechnicians.length > 0 ? (
-                            approvedTechnicians?.map((technician) => (
-                                <div key={technician.id} className="technician-card">
+                            approvedTechnicians.map((technician) => (
+                                <div
+                                    key={technician.id}
+                                    className="technician-card"
+                                    onClick={() => openTechModal(technician)}
+                                >
+                                    <div className="profile-placeholder">
+                                        {technician.profile_picture ? (
+                                            <img
+                                                src={technician.profile_picture}
+                                                alt={technician.name}
+                                                className="profile-pic"
+                                            />
+                                        ) : (
+                                            <span>{getInitials(technician.name)}</span>
+                                        )}
+                                    </div>
+                                    <FaClock className="clock-icon" />
                                     <div className="technician-name">{technician.name}</div>
                                     <div className="technician-role">{technician.role}</div>
                                 </div>
@@ -181,18 +166,18 @@ function TechnicianDashboard() {
                 </div>
                 <div className="chart-container">
                     <h2>Ticket Status Overview</h2>
-                    {/* {chartData ? (
+                    {chartData ? (
                         <Bar data={chartData} options={chartOptions} />
                     ) : (
                         <p>Loading chart...</p>
-                    )} */}
+                    )}
                 </div>
             </div>
+
+            {isTechModalOpen && (
+                <TechnicianModal technician={selectedTechnician} onClose={closeTechModal} />
+            )}
         </div>
-
-
-
-
     );
 }
 
