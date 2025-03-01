@@ -2,6 +2,7 @@ import json
 from flask import Blueprint, request, jsonify
 
 from backend.controller.technician_controller import (
+    close_ticket,
     get_all_assigned_tickets,
     get_all_inventory_items,
     get_assigned_tickets,
@@ -101,5 +102,26 @@ def fetch_requested_spares():
         return jsonify({"success": False, "message": "Ticket ID is required"}), 400
 
     return get_requested_spares(ticket_id)  # Call the controller function
-   
+
+
+@technician_bp.route('/close_ticket', methods=['POST'])
+def close_ticket_route():
+    try:
+        data = json.loads(request.data.decode('utf-8'))
+        
+        # Check for missing data fields
+        if not data or "ticketId" not in data or "status" not in data or "closure_log" not in data:
+            return jsonify({"success": False, "message": "Missing ticket_id, status, or closure_log"}), 400
+        
+        ticket_id = data["ticketId"]
+        status = data["status"]
+        closure_log = data["closure_log"]
+        technician_id = data["technician_id"]
+        user_id = data["user_id"]
+        
+        # Call controller function to close ticket
+        return close_ticket(ticket_id, status, closure_log, technician_id,user_id)
+    
+    except Exception as e:
+        return jsonify({"success": False, "message": "Invalid data provided"}), 400
 

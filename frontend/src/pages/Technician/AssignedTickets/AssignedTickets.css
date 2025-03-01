@@ -29,7 +29,10 @@
     display: flex;
     gap: 30px;
     justify-content: flex-start;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    /* Ensure horizontal layout */
+    overflow-x: auto;
+    /* Scroll if slots exceed width */
 }
 
 /* Ticket Slot */
@@ -44,7 +47,15 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: left;
     position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+    /* Added opacity transition */
+    min-width: 250px;
+    cursor: grab;
+    /* Indicates draggability */
+}
+
+.ticket-slot:active {
+    cursor: grabbing;
 }
 
 .ticket-slot:hover {
@@ -160,30 +171,38 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .assigned-tickets-container {
-        height: auto; /* Allow height to adjust */
+        height: auto;
+        /* Allow height to adjust */
         padding: 20px 0;
-        justify-content: flex-start; /* Align content at top */
+        justify-content: flex-start;
+        /* Align content at top */
     }
 
     .page-title-1 {
-        font-size: 1.8rem; /* Slightly smaller title */
-        margin-bottom: 30px; /* Reduce spacing */
+        font-size: 1.8rem;
+        /* Slightly smaller title */
+        margin-bottom: 30px;
+        /* Reduce spacing */
         width: 90%;
     }
 
     .ticket-slots {
-        flex-direction: column; /* Stack tickets vertically */
+        flex-direction: column;
+        /* Stack on mobile */
         align-items: center;
         height: auto;
         width: 90%;
         gap: 20px;
+        overflow-x: hidden;
     }
 
     .ticket-slot {
-        flex: none; /* Remove flex growth */
-        width: 100%; /* Full width */
+        flex: none;
+        width: 100%;
         padding: 15px;
-        min-height: 200px; /* Ensure visibility */
+        min-height: 200px;
+        cursor: default;
+        /* Disable dragging on mobile */
     }
 
     .ticket-title {

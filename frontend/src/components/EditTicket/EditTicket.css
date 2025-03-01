@@ -289,6 +289,88 @@
         background-color: #218838;
     }
 
+    /* Closure Modal */
+    .closure-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        /* Semi-transparent overlay */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        /* Above the main ticket modal */
+    }
+
+    .closure-modal-content {
+        background: #fff;
+        width: 90%;
+        max-width: 400px;
+        /* Fixed maximum width */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+
+    .closure-modal-content h4 {
+        margin-bottom: 15px;
+        color: #333;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .closure-modal-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        resize: vertical;
+        min-height: 100px;
+        margin-bottom: 15px;
+    }
+
+    .closure-modal-buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .closure-modal-buttons .submit-closure-button {
+        background-color: #28a745;
+        /* Green */
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .closure-modal-buttons .submit-closure-button:hover {
+        background-color: #218838;
+        /* Darker green on hover */
+    }
+
+    .closure-modal-buttons .cancel-button {
+        background-color: #dc3545;
+        /* Red */
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .closure-modal-buttons .cancel-button:hover {
+        background-color: #c82333;
+        /* Darker red on hover */
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .large-image {

@@ -1,7 +1,7 @@
 from flask import jsonify
 
 from backend.models.notifications import send_notification
-from backend.models.technician import fetch_all_inventory_from_db, fetch_all_tickets_from_db, fetch_assigned_tickets_from_db, fetch_requested_spares_from_db, fetch_technician_stats, save_spares_request,  update_ticket_status_in_db
+from backend.models.technician import close_ticket_in_db, fetch_all_inventory_from_db, fetch_all_tickets_from_db, fetch_assigned_tickets_from_db, fetch_requested_spares_from_db, fetch_technician_stats, save_spares_request,  update_ticket_status_in_db
 
 def get_technician_stats(technician_id):
     try:
@@ -158,3 +158,34 @@ def get_requested_spares(ticket_id):
             "error": str(e)
         }), 500
 
+def close_ticket(ticket_id, status, closure_log, technician_id,user_id):
+    try:
+        # Call the model to update the ticket status and closure log in the database
+        result = close_ticket_in_db(ticket_id, status, closure_log, technician_id)
+
+        if result:
+            notification_message = f"Your ticket #{ticket_id} has been closed by our technician.Please close the ticket and give Feedback"
+
+            send_notification(
+                sender_id=technician_id,  # Technician as sender
+                receiver_id=user_id,  # Assuming user_id is returned or fetched; adjust as needed
+                sender_name="Technician",
+                message=notification_message,
+                notification_type="ticket_closed"
+            )
+            return jsonify({
+                "success": True,
+                "message": "Ticket closed successfully"
+            }), 200
+        else:
+            return jsonify({
+                "success": False,
+                "message": "Failed to close ticket"
+            }), 400
+    except Exception as e:
+        print(f"Error closing ticket: {e}")
+        return jsonify({
+            "success": False,
+            "message": "Error closing ticket",
+            "error": str(e)
+        }), 500

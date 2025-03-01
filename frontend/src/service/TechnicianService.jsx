@@ -51,7 +51,7 @@ export const getAssignedTicketsForTechnician = async (technician_id) => {
 
 export const getInventory = async () => {
     try {
-        const response = await axios.get(`${API_URL}/get-all-items`); // Endpoint for fetching inventory
+        const response = await axios.get(`${API_URL}/get-all-items`);
         return response.data;
     } catch (error) {
         console.error("API call failed:", error);
@@ -76,6 +76,24 @@ export const getRequestedSpares = async (ticketId) => {
     } catch (error) {
         console.error("API call failed:", error);
         return []; // Returning an empty array in case of failure
+    }
+};
+
+// In TechnicianService.js
+export const closeTicket = async (ticketId, status, closureLog, technician_id, userId) => {
+    try {
+        const requestData = {
+            ticketId: ticketId,
+            status: status,
+            closure_log: closureLog,
+            technician_id: technician_id,
+            user_id: userId
+        };
+        const response = await axios.post(`${API_URL}/close_ticket`, requestData); // New endpoint
+        return response.data;
+    } catch (error) {
+        console.error("API call failed:", error);
+        return { success: false, error };
     }
 };
 

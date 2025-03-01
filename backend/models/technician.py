@@ -1,5 +1,6 @@
 import mysql
 from ..utils.db_utils import get_db_connection
+from datetime import datetime
 
 
 def fetch_unapproved_technicians_from_db():
@@ -289,4 +290,84 @@ def fetch_requested_spares_from_db(ticket_id):
     except mysql.connector.Error as err:
         print(f"Error fetching requested spares: {err}")
         return None
+
+
+def close_ticket_in_db(ticket_id, status, closure_log, technician_id):
+    connection = None
+    cursor = None
+    try:
+        # Connect to MySQL database
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Start a transaction to ensure ACID properties
+        connection.start_transaction()
+
+        # Step 1: Insert closure log into closure_logs table
+        insert_log_query = """
+        INSERT INTO closure_logs (log, timestamp)
+        VALUES (%s, %s)
+        """
+        cursor.execute(insert_log_query, (closure_log, datetime.now()))
+        log_id = cursor.lastrowid  # Get the auto-incremented log_id
+
+        # Step 2: Update status in tickets table
+        update_ticket_status_query = """
+        UPDATE tickets
+        SET status = %s
+        WHERE ticket_id = %s
+        """
+        cursor.execute(update_ticket_status_query, (status, ticket_id))
+        if cursor.rowcount == 0:
+            connection.rollback()
+            print(f"No ticket found with ticket_id: {ticket_id}")
+            return False
+
+        # Step 3: Update closure_time and log_id in ticket_mapping table
+        update_ticket_mapping_query = """
+        UPDATE ticket_mapping
+        SET closure_time = %s,
+            log_id = %s
+        WHERE ticket_id = %s AND technician_id = %s
+        """
+        cursor.execute(update_ticket_mapping_query, (datetime.now(), log_id, ticket_id, technician_id))
+        if cursor.rowcount == 0:
+            connection.rollback()
+            print(f"No ticket mapping found for ticket_id: {ticket_id} and technician_id: {technician_id}")
+            return False
+
+        # Step 4: Update technician_metrics
+        update_metrics_query = """
+        UPDATE technician_metrics
+        SET total_resolved_tickets = total_resolved_tickets + 1,
+            today_resolved_tickets = today_resolved_tickets + 1,
+            current_assigned_tickets = current_assigned_tickets - 1
+        WHERE technician_id = %s
+        """
+        cursor.execute(update_metrics_query, (technician_id,))
+        if cursor.rowcount == 0:
+            connection.rollback()
+            print(f"No metrics found for technician_id: {technician_id}")
+            return False
+
+        # Commit the transaction
+        connection.commit()
+        return True
+
+    except mysql.connector.Error as err:
+        print(f"Database error: {err}")
+        if connection:
+            connection.rollback()
+        return False
+    except Exception as e:
+        print(f"Error: {e}")
+        if connection:
+            connection.rollback()
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
 

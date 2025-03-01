@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { CheckCircle, Hourglass, UserCheck, ClipboardList, FileText } from "lucide-react";
+import { CheckCircle, Hourglass, UserCheck, ClipboardList } from "lucide-react";
 import "./EditTicket.css";
 import { FaTimesCircle } from "react-icons/fa";
-import { getRequestedSpares, updateTicketStatus } from "../../service/TechnicianService";
+import { closeTicket, getRequestedSpares, updateTicketStatus } from "../../service/TechnicianService"; // Added closeTicket
 import socket from "../socket";
 import { useSelector } from "react-redux";
 import RequestSparesModal from "../RequestSpares/RequestSpares";
+import toast from "react-hot-toast";
 
 const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequestSpares, onDispute }) => {
     if (!ticket) return null;
@@ -13,73 +14,78 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
     const [closureLog, setClosureLog] = useState("");
     const [openSpares, setOpenSpares] = useState();
     const [spares, setSpares] = useState([]);
-
     const [status, setStatus] = useState(ticket.status);
-    const [timer, setTimer] = useState(null); // To hold the timer interval ID
-    const [timeLeft, setTimeLeft] = useState(0); // To track the time remaining
-    const [isDisputed, setIsDisputed] = useState(false); // To track if the process is disputed
-    const { user } = useSelector((state) => state.user)
+    const [timer, setTimer] = useState(null);
+    const [timeLeft, setTimeLeft] = useState(0);
+    const [isDisputed, setIsDisputed] = useState(false);
+    const { user } = useSelector((state) => state.user);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [isClosureModalOpen, setIsClosureModalOpen] = useState(false); // New state for closure modal
 
-    // Function to determine progress width and active step
     const getStatusProgress = (status) => {
-        switch (status.toLowerCase().replace(/\s+/g, "")) {  // Remove spaces to match properly
-            case "open":
-                return 0;
-            case "assigned":
-                return 33;
-            case "inprogress":
-                return 66;
-            case "closed":
-                return 100;
-            default:
-                return 0;
+        switch (status.toLowerCase().replace(/\s+/g, "")) {
+            case "open": return 0;
+            case "assigned": return 33;
+            case "inprogress": return 66;
+            case "closed": return 100;
+            default: return 0;
         }
     };
 
     const isTechnician = user.role === "technician";
     const isAdmin = user.role === "admin";
-    // Handle closure log input
+
     const handleClosureLogChange = (e) => {
         setClosureLog(e.target.value);
     };
 
-    // Handle the status update
     const handleStatusUpdate = async (newStatus) => {
         setStatus(newStatus);
-        // onStatusUpdate(ticket.ticket_id, newStatus);
-        console.log("Updated Status:", ticket);  // Debugging
+        console.log("Updated Status:", ticket);
 
-
-        // Start timer if status is updated to 'In Progress'
         if (newStatus.toLowerCase() === "inprogress") {
-            const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.id)
+            const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.id);
             if (response.success) {
-                socket.emit("inprogress-update", ticket.user_id); // Emit update
-                socket.emit("unread-notifications", ticket.user_id); // Emit update
+                socket.emit("inprogress-update", ticket.user_id);
+                socket.emit("unread-notifications", ticket.user_id);
                 setStatus(newStatus);
-
-
             }
         }
     };
 
+    // Open closure modal instead of setting closureLog directly
+    const handleCloseTicketClick = () => {
+        setIsClosureModalOpen(true);
+    };
 
-
-    // Handle closure action
-    const handleCloseTicket = () => {
+    // Handle closure submission from modal
+    const handleCloseTicketSubmit = async () => {
         if (closureLog.trim() === "") {
-            alert("Please provide a closure log.");
-        } else {
-            onCloseTicket(ticket.ticket_id, closureLog);
+            toast.error("Please provide a closure log.");
+            return;
+        }
+        try {
+            const response = await closeTicket(ticket.ticket_id, "Closed", closureLog, user.id, ticket.id);
+            if (response.success) {
+                setStatus("Closed");
+                // socket.emit("ticket-closed", ticket.user_id);
+                onCloseTicket(ticket.ticket_id, closureLog);
+                setIsClosureModalOpen(false);
+                setClosureLog(""); // Clear after submission
+                toast.success(response.message)
+            } else {
+                toast.error(response.message);
+            }
+        } catch (error) {
+            console.error("Error closing ticket:", error);
         }
     };
-    useEffect(() => {
-        console.log(ticket)
-        const fetchSpares = async () => {
-            console.log(ticket.ticket_id)
 
-            const response = await getRequestedSpares(ticket.ticket_id); // Call the service function
+    useEffect(() => {
+        console.log(ticket);
+        const fetchSpares = async () => {
+            console.log(ticket.ticket_id);
+            const response = await getRequestedSpares(ticket.ticket_id);
             setSpares(response.requested_spares);
         };
 
@@ -88,20 +94,14 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
         }
     }, [ticket.ticket_id]);
 
-
     return (
         <div className="ticket-modal">
             <div className="ticket-modal-content">
-                {/* Close Button */}
                 <button className="close-button" onClick={onClose}>X</button>
-
-                {/* Header */}
                 <div className="modal-header">
                     <h3>Ticket Details</h3>
                     <p className="ticket-id">Ticket ID: {ticket.ticket_id}</p>
                 </div>
-
-                {/* Grid Layout for Details */}
                 <div className="modal-grid">
                     <div className="modal-section">
                         <h4>Ticket Information</h4>
@@ -111,37 +111,32 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                         <div className="detail-item"><strong>Description:</strong> {ticket.description}</div>
                         <div className="detail-item"><strong>Priority:</strong> {ticket.priority}</div>
                     </div>
-
-                    {
-                        isAdmin ? (
-                            <>
-                                <div className="modal-section">
-                                    <h4>Created By</h4>
-                                    <div className="detail-item"><strong>Name:</strong> {ticket.user_name || "Unknown"}</div>
-                                    <div className="detail-item"><strong>Contact:</strong> {ticket.user_phone_number || "N/A"}</div>
-                                </div>
-                                <div className="modal-section">
-                                    <h4>Assigned To</h4>
-                                    <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
-                                    <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
-                                </div>
-                            </>
-                        ) : isTechnician ? (
+                    {isAdmin ? (
+                        <>
                             <div className="modal-section">
                                 <h4>Created By</h4>
                                 <div className="detail-item"><strong>Name:</strong> {ticket.user_name || "Unknown"}</div>
                                 <div className="detail-item"><strong>Contact:</strong> {ticket.user_phone_number || "N/A"}</div>
                             </div>
-                        ) : (
                             <div className="modal-section">
                                 <h4>Assigned To</h4>
                                 <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
                                 <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
                             </div>
-                        )
-                    }
-
-
+                        </>
+                    ) : isTechnician ? (
+                        <div className="modal-section">
+                            <h4>Created By</h4>
+                            <div className="detail-item"><strong>Name:</strong> {ticket.user_name || "Unknown"}</div>
+                            <div className="detail-item"><strong>Contact:</strong> {ticket.user_phone_number || "N/A"}</div>
+                        </div>
+                    ) : (
+                        <div className="modal-section">
+                            <h4>Assigned To</h4>
+                            <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
+                            <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
+                        </div>
+                    )}
                     <div className="modal-section">
                         <h4>Timeline</h4>
                         <div className="detail-item"><strong>Created At:</strong> {new Date(ticket.created_at).toLocaleString()}</div>
@@ -176,28 +171,22 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                                 <p>No attachments available.</p>
                             </div>
                         )}
-
-                        {/* Image Preview Modal */}
                         {selectedImage && (
                             <div className="image-modal" onClick={() => setSelectedImage(null)}>
                                 <div className="image-modal-content">
                                     <span className="close-button" onClick={() => setSelectedImage(null)}>
-                                        &times;
+                                        ×
                                     </span>
                                     <img src={selectedImage} alt="Preview" className="large-image" />
                                 </div>
                             </div>
                         )}
                     </div>
-
-
-                    {/* Status Progress Bar */}
                     <div className="modal-section">
                         <h4>Status Progress</h4>
                         <div className="progress-container">
                             <div className="progress-line"></div>
                             <div className="progress-fill" style={{ width: `${getStatusProgress(status)}%` }}></div>
-
                             <div className={`progress-step ${status.toLowerCase() === "open" ? "active" : ""}`}>
                                 <ClipboardList size={20} />
                             </div>
@@ -232,9 +221,6 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                             <p>No spares requested for this ticket.</p>
                         )}
                     </div>
-
-
-                    {/* Action Buttons */}
                     {isTechnician && status !== "closed" && (
                         <div className="modal-section">
                             {status.toLowerCase() === "open" || status.toLowerCase() === "assigned" ? (
@@ -244,56 +230,44 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                                 </button>
                             ) : status.toLowerCase() === "in progress" ? (
                                 <>
-                                    <button onClick={handleCloseTicket} className="action-button ticket-close-button">
+                                    <button onClick={handleCloseTicketClick} className="action-button ticket-close-button">
                                         <FaTimesCircle size={16} style={{ marginRight: '8px' }} />
                                         Close Ticket
                                     </button>
-
-                                    {closureLog && (
-                                        <div className="closure-log-section">
-                                            <textarea
-                                                placeholder="Enter closure log..."
-                                                value={closureLog}
-                                                onChange={handleClosureLogChange}
-                                                className="closure-textarea"
-                                            />
-                                            <button onClick={handleCloseTicket} className="submit-closure-button">
-                                                Submit Closure Log
-                                            </button>
+                                    {isClosureModalOpen && (
+                                        <div className="closure-modal">
+                                            <div className="closure-modal-content">
+                                                <h4>Enter Closure Log</h4>
+                                                <textarea
+                                                    placeholder="Enter closure log..."
+                                                    value={closureLog}
+                                                    onChange={handleClosureLogChange}
+                                                    className="closure-modal-textarea"
+                                                    rows={4}
+                                                />
+                                                <div className="closure-modal-buttons">
+                                                    <button onClick={handleCloseTicketSubmit} className="submit-closure-button">
+                                                        Submit Closure Log
+                                                    </button>
+                                                    <button onClick={() => setIsClosureModalOpen(false)} className="cancel-button">
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </>
                             ) : null}
-
                             <button onClick={() => setOpenSpares(ticket.ticket_id)} className="action-button">
                                 <ClipboardList size={16} style={{ marginRight: '8px' }} />
                                 Request Spares
                             </button>
-
                             {openSpares && (
                                 <RequestSparesModal
                                     ticketId={openSpares}
                                     onClose={() => setOpenSpares(null)}
                                 />
                             )}
-
-                        </div>
-                    )}
-
-
-
-                    {/* Closure Log Input */}
-                    {status === "Closed" && (
-                        <div className="modal-section">
-                            <h4>Closure Log</h4>
-                            <textarea
-                                value={closureLog}
-                                onChange={handleClosureLogChange}
-                                placeholder="Enter closure log"
-                                rows={4}
-                                className="closure-log-textarea"
-                            />
-                            <button onClick={handleCloseTicket} className="action-button">Close Ticket</button>
                         </div>
                     )}
                 </div>
