@@ -246,11 +246,21 @@ const Home = () => {
     return (
         <div className="home-content-wrapper">
             <div className="dashboard-header">
+                <h1>Welcome, {user?.name || "Technician"}</h1>
+                <span className="current-date">{new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                })}</span>
+            </div>
+            <div className="dashboard-actions">
                 <h2>Dashboard</h2>
                 <button className="create-ticket-btn" onClick={() => navigate("/new-ticket")}>
                     <span className="plus-icon">+</span> New Ticket
                 </button>
             </div>
+
 
             <div className="dashboard-stats">
                 <div className="stat-card"><h3>Tickets Opened Today</h3><p>{ticketStats.openedToday}</p></div>
