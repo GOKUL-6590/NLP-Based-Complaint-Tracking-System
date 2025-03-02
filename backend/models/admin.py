@@ -21,12 +21,11 @@ def fetch_dashboard_metrics():
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Example queries (modify as per actual schema)
-    cursor.execute("SELECT COUNT(*) FROM users where role='user'")
+    # Basic metrics
+    cursor.execute("SELECT COUNT(*) FROM users WHERE role='user'")
     total_users = cursor.fetchone()[0]
 
-
-    cursor.execute("SELECT COUNT(*) FROM tickets WHERE status in ('Open','Assigned')")
+    cursor.execute("SELECT COUNT(*) FROM tickets WHERE status IN ('Open', 'Assigned')")
     open_tickets = cursor.fetchone()[0]
 
     cursor.execute("SELECT COUNT(*) FROM tickets WHERE status='Closed'")
@@ -35,6 +34,20 @@ def fetch_dashboard_metrics():
     cursor.execute("SELECT COUNT(*) FROM tickets WHERE status='In Progress'")
     pending_tickets = cursor.fetchone()[0]
 
+    # Chart data: Tickets by status over last 6 months
+    cursor.execute("""
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m') AS month,
+            SUM(CASE WHEN status IN ('Open', 'Assigned') THEN 1 ELSE 0 END) AS open_tickets,
+            SUM(CASE WHEN status = 'Closed' THEN 1 ELSE 0 END) AS resolved_tickets,
+            SUM(CASE WHEN status = 'In Progress' THEN 1 ELSE 0 END) AS pending_tickets
+        FROM tickets
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+        ORDER BY month ASC
+    """)
+    chart_data = cursor.fetchall()
+
     connection.close()
 
     return {
@@ -42,8 +55,15 @@ def fetch_dashboard_metrics():
         "open_tickets": open_tickets,
         "resolved_tickets": resolved_tickets,
         "pending_tickets": pending_tickets,
+        "chart_data": [
+            {
+                "month": row[0],          # e.g., "2023-09"
+                "open_tickets": row[1],   # Open/Assigned count
+                "resolved_tickets": row[2], # Closed count
+                "pending_tickets": row[3] # In Progress count
+            } for row in chart_data
+        ]
     }
-
 def get_assigned_tickets_from_db():
     try:
         conn = get_db_connection()

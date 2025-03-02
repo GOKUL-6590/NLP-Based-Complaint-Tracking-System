@@ -123,6 +123,7 @@ def get_dashboard_data():
             "openTickets": dashboard_data.get("open_tickets", 0),
             "resolvedTickets": dashboard_data.get("resolved_tickets", 0),
             "pendingTickets": dashboard_data.get("pending_tickets", 0),
+            "chartData": dashboard_data.get("chart_data", []),  # Include chart_data
             "message": "Dashboard data fetched successfully"
         }), 200
     except Exception as e:
