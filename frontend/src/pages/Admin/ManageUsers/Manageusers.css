@@ -16,6 +16,21 @@
     gap: 20px;
 }
 
+.column-container.animate-on-load {
+    animation: fadeIn 0.7s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 /* The first column, which will contain two rows */
 .first-column {
     display: flex;
@@ -36,6 +51,24 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.first-column .first-row.animate-on-load,
+.first-column .second-row.animate-on-load {
+    animation: slideInFromLeft 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes slideInFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* Second column */
 .second-column {
     width: 48%;
@@ -45,6 +78,23 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     height: 100%;
     overflow-y: auto;
+}
+
+.second-column.animate-on-load {
+    animation: slideInFromRight 0.5s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+@keyframes slideInFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* Header styling */
@@ -85,6 +135,7 @@ p {
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .approve-btn:hover {
@@ -99,6 +150,7 @@ p {
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 .reject-btn:hover {
@@ -115,48 +167,106 @@ p {
 
 /* Technician card styling */
 .technician-card {
-    background-color: #ecf0f1;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100px;
+    height: 150px;
+    background: linear-gradient(135deg, #e6f0ff, #d9e8ff);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .technician-card:hover {
-    transform: translateY(-10px);
+    transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Technician name styling */
-.technician-card .technician-name {
-    font-size: 1.2rem;
+.technician-card .profile-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
     font-weight: bold;
-    color: #34495e;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
-/* Technician role styling */
+.technician-card .profile-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.technician-card .clock-icon {
+    font-size: 20px;
+    color: #007bff;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.technician-card .technician-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-top: 10px;
+}
+
 .technician-card .technician-role {
-    font-size: 1rem;
-    color: #7f8c8d;
+    font-size: 11px;
+    color: #666;
+    text-align: center;
 }
 
-/* Second column list of users */
-.second-column ul {
-    list-style-type: none;
-    padding-left: 0;
+/* Table Wrapper for Users */
+.table-wrapper {
+    background-color: #ffffff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+    min-height: 80%;
+    max-height: 80%;
 }
 
-.second-column li {
-    padding: 8px;
-    background-color: #ecf0f1;
-    border-radius: 4px;
-    margin-bottom: 10px;
+/* Users Table */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.second-column li:hover {
-    background-color: #bdc3c7;
+.users-table th,
+.users-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    color: #2d3436;
+}
+
+.users-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.users-table tr {
+    transition: background-color 0.3s ease;
+}
+
+.users-table tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
 }
 
 /* Mobile Responsiveness */
@@ -164,20 +274,16 @@ p {
     .manage-users-container {
         padding: 15px;
         height: auto;
-        /* Allow natural height */
         overflow-y: auto;
-        /* Enable scrolling */
     }
 
     .column-container {
         flex-direction: column;
-        /* Stack columns vertically */
         gap: 15px;
     }
 
     .first-column {
         width: 100%;
-        /* Full width */
         gap: 15px;
     }
 
@@ -188,7 +294,6 @@ p {
 
     .second-column {
         width: 100%;
-        /* Full width */
         padding: 15px;
     }
 
@@ -204,7 +309,6 @@ p {
     .technician-item {
         padding: 8px;
         flex-direction: column;
-        /* Stack name and buttons */
         align-items: flex-start;
         gap: 8px;
     }
@@ -217,24 +321,43 @@ p {
 
     .technician-cards-container {
         grid-template-columns: repeat(2, 1fr);
-        /* 2 columns */
         gap: 15px;
     }
 
     .technician-card {
-        padding: 15px;
+        width: 90px;
+        height: 130px;
+        padding: 8px;
+    }
+
+    .technician-card .profile-placeholder {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
     }
 
     .technician-card .technician-name {
-        font-size: 1.1rem;
+        font-size: 13px;
+        margin-top: 8px;
     }
 
     .technician-card .technician-role {
-        font-size: 0.9rem;
+        font-size: 10px;
     }
 
-    .second-column li {
-        padding: 6px;
+    .technician-card .clock-icon {
+        font-size: 18px;
+    }
+
+    .table-wrapper {
+        padding: 15px;
+        min-height: auto;
+        max-height: none;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 10px;
         font-size: 0.9rem;
     }
 }
@@ -242,7 +365,6 @@ p {
 @media (max-width: 480px) {
     .manage-users-container {
         padding: 10px;
-        height: 100vh;
     }
 
     .first-column .first-row,
@@ -273,24 +395,43 @@ p {
 
     .technician-cards-container {
         grid-template-columns: 1fr;
-        /* 1 column */
         gap: 10px;
     }
 
     .technician-card {
-        padding: 12px;
+        width: 80px;
+        height: 120px;
+        padding: 8px;
+    }
+
+    .technician-card .profile-placeholder {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
     }
 
     .technician-card .technician-name {
-        font-size: 1rem;
+        font-size: 12px;
+        margin-top: 6px;
     }
 
     .technician-card .technician-role {
-        font-size: 0.85rem;
+        font-size: 9px;
     }
 
-    .second-column li {
-        padding: 5px;
+    .technician-card .clock-icon {
+        font-size: 16px;
+        top: 4px;
+        right: 4px;
+    }
+
+    .table-wrapper {
+        padding: 10px;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 8px;
         font-size: 0.85rem;
     }
 }

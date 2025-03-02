@@ -7,7 +7,7 @@ def get_all_users_from_db():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT id, name FROM users WHERE role = 'user'")
+        cursor.execute("SELECT id, name ,email FROM users WHERE role = 'user'")
         users = cursor.fetchall()
 
         cursor.close()
