@@ -5,6 +5,7 @@ import json
 
 
 from backend.NLP.classifier import classify_complaint
+from backend.models.technician import assign_unassigned_tickets
 from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_tickets_by_userid, get_tickets_stats
 from ..models.notifications import  delete_notifications_by_receiver, get_notifications_by_receiver, get_unread_notifications_count_by_userid, mark_all_notification_as_read, mark_notification_as_read, save_fcm_token_to_db
 from flask import jsonify
@@ -194,7 +195,7 @@ def new_ticket_creator(data):
         sla_hours = priority_sla.get(data['priority'], 36)
         sla_deadline = datetime.now() + timedelta(hours=sla_hours)
         data['sla_deadline'] = sla_deadline
-
+        assign_unassigned_tickets()
         assigned = assign_ticket_to_technician(ticket_id, data['userid'], data['priority'], sla_deadline)
         if not assigned:
             return jsonify({

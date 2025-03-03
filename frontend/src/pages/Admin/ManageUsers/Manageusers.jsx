@@ -116,13 +116,13 @@ const ManageUsers = () => {
                                         className="approve-btn"
                                         onClick={() => approveTechnician(technician.id)}
                                     >
-                                        ✅ Approve
+                                        Approve
                                     </button>
                                     <button
                                         className="reject-btn"
                                         onClick={() => rejectTechnician(technician.id)}
                                     >
-                                        ❌ Reject
+                                        Reject
                                     </button>
                                 </div>
                             ))
