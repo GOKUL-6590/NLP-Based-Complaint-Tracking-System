@@ -137,9 +137,7 @@
 }
 
 .ticket-table tr:hover {
-    transform: scale(1.02);
-    /* Slight scale-up on hover */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+
     /* Enhanced shadow */
     background-color: #f0f2ff;
     /* Light purple tint */
