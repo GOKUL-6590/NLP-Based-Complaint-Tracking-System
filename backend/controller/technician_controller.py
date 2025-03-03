@@ -118,7 +118,7 @@ def process_spares_request(ticket_id, technician_id, items):
             
             send_notification(
                 sender_id=technician_id,
-                receiver_id=5,  # Assuming 1 is the admin/system user
+                receiver_id=1,  # Assuming 1 is the admin/system user
                 sender_name="Technician",
                 message=notification_message,
                 notification_type="spares_request"
@@ -168,7 +168,7 @@ def close_ticket(ticket_id, status, closure_log, technician_id,user_id):
 
             send_notification(
                 sender_id=technician_id,  # Technician as sender
-                receiver_id=user_id,  # Assuming user_id is returned or fetched; adjust as needed
+                receiver_id=user_id,  
                 sender_name="Technician",
                 message=notification_message,
                 notification_type="ticket_closed"
