@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { assignTicketToTechnician, getAssignedTickets, getUnassignedTickets } from "../../../service/adminService"; // Adjust path if necessary
+import { assignTicketToTechnician, getAssignedTickets, getUnassignedTickets } from "../../../service/adminService";
 import "./ManageTickets.css";
 import TicketDetailsModal from "../../../components/TicketDetailsModal/TicketDetailsModal";
 import AssignTechnicianModal from "../../../components/AssignTechnicianModal/AssignTechnicianModal";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import socket from "../../../components/socket";
 import { useDispatch, useSelector } from "react-redux";
 import TicketModal from "../../../components/EditTicket/EditTicket";
@@ -37,56 +37,57 @@ const ManageTickets = () => {
 
     const fetchAssignedTickets = async () => {
         try {
-            dispatch(showLoading())
+            dispatch(showLoading());
             const response = await getAssignedTickets();
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             setAssignedTickets(response.tickets);
         } catch (error) {
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             console.error("Error fetching assigned tickets:", error);
         }
     };
 
     const fetchUnassignedTickets = async () => {
         try {
-            dispatch(showLoading())
+            dispatch(showLoading());
             const response = await getUnassignedTickets();
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             setUnassignedTickets(response.tickets);
         } catch (error) {
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             console.error("Error fetching unassigned tickets:", error);
         }
     };
 
     const handleAssignTicket = async (technician, assignType) => {
         try {
-            console.log(selectedTicket.ticket_id, technician, assignType)
-            dispatch(showLoading())
+            console.log(selectedTicket.ticket_id, technician, assignType);
+            dispatch(showLoading());
             const response = await assignTicketToTechnician(selectedTicket.ticket_id, technician.technician_id, assignType);
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             socket.emit("ticket-assigned", user.id);
             setIsAssignModalOpen(false);
-            setSelectedTicket(null)
+            setSelectedTicket(null);
             if (response.success) {
                 fetchAssignedTickets();
                 fetchUnassignedTickets(); // Refresh unassigned tickets after assignment
                 toast.success("Ticket assigned successfully.");
             }
-
         } catch (error) {
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             console.error("Error assigning ticket:", error);
             toast.error("Failed to assign ticket.");
         }
     };
 
+    // Filter assigned tickets by ticket_id
     const filteredAssignedTickets = assignedTickets.filter(ticket =>
-        ticket.description.toLowerCase().includes(searchAssigned.toLowerCase())
+        ticket.ticket_id.toString().toLowerCase().includes(searchAssigned.toLowerCase())
     );
 
+    // Filter unassigned tickets by ticket_id
     const filteredUnassignedTickets = unassignedTickets.filter(ticket =>
-        ticket.description.toLowerCase().includes(searchUnassigned.toLowerCase())
+        ticket.ticket_id.toString().toLowerCase().includes(searchUnassigned.toLowerCase())
     );
 
     const handleTicketClick = (ticket) => {
@@ -104,7 +105,7 @@ const ManageTickets = () => {
                     <h2 className="section-title">Assigned Tickets</h2>
                     <input
                         type="text"
-                        placeholder="Search assigned tickets..."
+                        placeholder="Search by Ticket ID..."
                         className="search-bar"
                         value={searchAssigned}
                         onChange={e => setSearchAssigned(e.target.value)}
@@ -144,7 +145,7 @@ const ManageTickets = () => {
                     <h2 className="section-title">Unassigned Tickets</h2>
                     <input
                         type="text"
-                        placeholder="Search unassigned tickets..."
+                        placeholder="Search by Ticket ID..."
                         className="search-bar"
                         value={searchUnassigned}
                         onChange={e => setSearchUnassigned(e.target.value)}
@@ -196,7 +197,7 @@ const ManageTickets = () => {
             {isAssignModalOpen && (
                 <AssignTechnicianModal
                     ticket={selectedTicket}
-                    onClose={() => { setIsAssignModalOpen(false), setSelectedTicket(null) }}
+                    onClose={() => { setIsAssignModalOpen(false); setSelectedTicket(null); }}
                     onAssign={handleAssignTicket}
                 />
             )}

@@ -4,25 +4,36 @@
     justify-content: space-between;
     padding: 24px;
     gap: 24px;
-    background-color: #f8f9fa;
+    /* Subtle gradient background */
     min-height: 100vh;
     overflow-x: auto;
-    /* Allow horizontal scrolling */
+    transition: background 0.5s ease;
+    /* Smooth background transition */
 }
 
+/* Tickets Column */
 .tickets-column {
     width: 50%;
     background-color: #ffffff;
     padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    /* Slightly larger radius for modern look */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    /* Softer, deeper shadow */
     display: flex;
     flex-direction: column;
     gap: 24px;
     overflow-x: auto;
-    /* Allow horizontal scrolling in case of large content */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth scaling and shadow */
 }
 
+.tickets-column:hover {
+    transform: translateY(-5px);
+    /* Slight lift on hover */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    /* Enhanced shadow on hover */
+}
 
 /* Section Header */
 .section-header {
@@ -32,127 +43,191 @@
     position: sticky;
     top: 0;
     padding: 16px 24px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e9ecef;
-    /* Subtle border */
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    /* Smooth header gradient */
+    border-bottom: 2px solid #e9ecef;
+    /* Bolder border */
     font-size: 1.1rem;
     font-weight: 600;
     color: #2d3436;
-    /* Dark, elegant text */
+    z-index: 1;
+    /* Ensure it stays above table */
+    transition: background 0.3s ease;
 }
 
 .section-title {
     margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    /* Slightly larger for emphasis */
+    font-weight: 700;
     color: #2d3436;
-    /* Consistent dark tone */
+    letter-spacing: 0.5px;
+    /* Subtle spacing for elegance */
+    transition: color 0.3s ease;
+}
+
+.section-header:hover .section-title {
+    color: #6c5ce7;
+    /* Purple tint on hover */
 }
 
 /* Search Bar */
 .search-bar {
     width: 240px;
-    padding: 12px 16px;
+    padding: 12px 20px;
+    /* Slightly more padding */
     font-size: 1rem;
     border-radius: 30px;
     border: 1px solid #e9ecef;
-    /* Subtle border */
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    /* Soft shadow */
-    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Deeper shadow */
+    transition: all 0.3s ease-in-out;
+    /* Smooth transitions for all changes */
 }
 
 .search-bar:focus {
+    width: 260px;
+    /* Slight expansion on focus */
     border-color: #6c5ce7;
-    /* Elegant purple for focus */
-    outline: none;
-    box-shadow: 0 0 12px rgba(108, 92, 231, 0.2);
-    /* Gentle glow */
+    box-shadow: 0 0 16px rgba(108, 92, 231, 0.3);
+    /* More pronounced glow */
+    background-color: #fafbff;
+    /* Light purple tint */
 }
 
 /* Ticket Table */
 .ticket-table {
     width: 100%;
     max-width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    /* Allows border-radius on rows */
+    border-spacing: 0 8px;
+    /* Space between rows */
     margin-bottom: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     table-layout: fixed;
-    /* Ensures columns adjust to fit the container */
 }
-
 
 .ticket-table th,
 .ticket-table td {
-    padding: 12px;
-    /* Adjust the padding if needed */
+    padding: 14px;
     text-align: left;
-    border-bottom: 1px solid #e9ecef;
     color: #2d3436;
+    transition: background-color 0.2s ease;
 }
 
-
 .ticket-table th {
-    background-color: #f8f9fa;
-    /* Light header background */
-    font-weight: 600;
+    /* Gradient header */
+    font-weight: 700;
+    text-transform: uppercase;
+    /* Bold and uppercase for emphasis */
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #6c5ce7;
+    /* Purple underline */
+}
+
+.ticket-table tr {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    /* Subtle row shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .ticket-table tr:hover {
-    background-color: #f8f9fa;
-    /* Light hover effect */
+    transform: scale(1.02);
+    /* Slight scale-up on hover */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    /* Enhanced shadow */
+    background-color: #f0f2ff;
+    /* Light purple tint */
     cursor: pointer;
 }
 
+/* Assign Button */
 .assignButton {
-    padding: 8px 12px;
-    /* Reduced padding */
-    font-size: 0.875rem;
-    /* Smaller font size */
-    background-color: #6c5ce7;
-    /* Your button background color */
+    padding: 8px 16px;
+    /* Adjusted padding for balance */
+    font-size: 0.9rem;
+    background: linear-gradient(135deg, #6c5ce7, #8978ff);
+    /* Gradient button */
     color: #ffffff;
-    /* Text color */
     border: none;
     border-radius: 20px;
-    /* Rounded corners */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+    /* Button shadow */
+    transition: all 0.3s ease;
+    /* Smooth transitions */
 }
 
 .assignButton:hover {
-    background-color: #5e54d2;
-    /* Darker shade on hover */
+    background: linear-gradient(135deg, #5e54d2, #7a6ce6);
+    /* Darker gradient */
+    transform: translateY(-2px);
+    /* Slight lift */
+    box-shadow: 0 6px 16px rgba(108, 92, 231, 0.5);
+    /* Stronger shadow */
+}
+
+.assignButton:active {
+    transform: translateY(0);
+    /* Reset lift on click */
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+    /* Reduced shadow */
 }
 
 .assignButton:focus {
     outline: none;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.4);
+    /* Focus ring */
 }
-
-
-/* Ticket Details Modal */
-
-
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .manage-tickets-container {
         flex-direction: column;
+        padding: 16px;
+        gap: 16px;
     }
 
     .tickets-column {
         width: 100%;
         margin-bottom: 24px;
+        border-radius: 12px;
     }
 
     .section-header {
         flex-direction: column;
         align-items: flex-start;
+        padding: 12px 16px;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
     }
 
     .search-bar {
         width: 100%;
         margin-top: 12px;
+        padding: 10px 16px;
+    }
+
+    .search-bar:focus {
+        width: 100%;
+        /* No expansion on mobile */
+    }
+
+    .ticket-table th,
+    .ticket-table td {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .assignButton {
+        padding: 6px 12px;
+        font-size: 0.85rem;
     }
 }
