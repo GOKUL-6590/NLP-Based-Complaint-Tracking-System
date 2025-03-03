@@ -31,7 +31,7 @@
     }
 }
 
-/* The first column, which will contain two rows */
+/* First column with two rows */
 .first-column {
     display: flex;
     flex-direction: column;
@@ -40,7 +40,6 @@
     gap: 20px;
 }
 
-/* First row in the first column */
 .first-column .first-row,
 .first-column .second-row {
     flex: 1;
@@ -110,21 +109,50 @@ p {
     font-size: 1rem;
 }
 
-/* Technician item styling */
-.technician-item {
+/* Container for all approval cards */
+.technician-approval-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+/* Individual technician approval card */
+.technician-approval-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 10px 15px;
     background-color: #ecf0f1;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.technician-approval-card:hover {
+    background-color: #e0e6e8;
+}
+
+/* Technician info section */
+.technician-info {
+    flex: 1;
+    min-width: 0;
 }
 
 /* Technician name */
-.technician-item span {
-    font-weight: bold;
+.technician-name {
+    font-weight: 500;
     color: #34495e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Button container */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 /* Approve button styling */
@@ -136,6 +164,7 @@ p {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    min-width: 80px;
 }
 
 .approve-btn:hover {
@@ -151,6 +180,7 @@ p {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    min-width: 80px;
 }
 
 .reject-btn:hover {
@@ -229,17 +259,6 @@ p {
     text-align: center;
 }
 
-/* Table Wrapper for Users */
-.table-wrapper {
-    background-color: #ffffff;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    overflow-x: auto;
-    min-height: 80%;
-    max-height: 80%;
-}
-
 /* Users Table */
 .users-table {
     width: 100%;
@@ -306,16 +325,20 @@ p {
         font-size: 0.9rem;
     }
 
-    .technician-item {
-        padding: 8px;
-        flex-direction: column;
-        align-items: flex-start;
+    .technician-approval-card {
+        padding: 8px 12px;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .action-buttons {
         gap: 8px;
     }
 
     .approve-btn,
     .reject-btn {
         padding: 5px 10px;
+        min-width: 70px;
         font-size: 0.9rem;
     }
 
@@ -349,12 +372,6 @@ p {
         font-size: 18px;
     }
 
-    .table-wrapper {
-        padding: 15px;
-        min-height: auto;
-        max-height: none;
-    }
-
     .users-table th,
     .users-table td {
         padding: 10px;
@@ -382,15 +399,26 @@ p {
         font-size: 0.85rem;
     }
 
-    .technician-item {
-        padding: 6px;
-        gap: 6px;
+    .technician-approval-card {
+        padding: 8px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-buttons {
+        width: 100%;
+        justify-content: space-between;
     }
 
     .approve-btn,
     .reject-btn {
-        padding: 4px 8px;
+        padding: 5px;
+        min-width: 48%;
         font-size: 0.85rem;
+    }
+
+    .technician-name {
+        margin-bottom: 6px;
     }
 
     .technician-cards-container {
@@ -423,10 +451,6 @@ p {
         font-size: 16px;
         top: 4px;
         right: 4px;
-    }
-
-    .table-wrapper {
-        padding: 10px;
     }
 
     .users-table th,

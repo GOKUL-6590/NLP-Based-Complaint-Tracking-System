@@ -109,23 +109,29 @@ const ManageUsers = () => {
                         {unapprovedTechnicians.length === 0 ? (
                             <p>No unapproved technicians</p>
                         ) : (
-                            unapprovedTechnicians.map((technician) => (
-                                <div key={technician.id} className="technician-item">
-                                    <span>{technician.name}</span>
-                                    <button
-                                        className="approve-btn"
-                                        onClick={() => approveTechnician(technician.id)}
-                                    >
-                                        Approve
-                                    </button>
-                                    <button
-                                        className="reject-btn"
-                                        onClick={() => rejectTechnician(technician.id)}
-                                    >
-                                        Reject
-                                    </button>
-                                </div>
-                            ))
+                            <div className="technician-approval-list">
+                                {unapprovedTechnicians.map((technician) => (
+                                    <div key={technician.id} className="technician-approval-card">
+                                        <div className="technician-info">
+                                            <span className="technician-name">{technician.name}</span>
+                                        </div>
+                                        <div className="action-buttons">
+                                            <button
+                                                className="approve-btn"
+                                                onClick={() => approveTechnician(technician.id)}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                className="reject-btn"
+                                                onClick={() => rejectTechnician(technician.id)}
+                                            >
+                                                Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </div>
                     <div className="second-row">
