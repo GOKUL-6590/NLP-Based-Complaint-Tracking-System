@@ -1,6 +1,9 @@
 import mysql
+
+from backend.models.user import assign_ticket_to_technician
 from ..utils.db_utils import get_db_connection
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 
 def fetch_unapproved_technicians_from_db():
@@ -24,7 +27,18 @@ def fetch_approved_technicians_from_db():
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
-        query = "SELECT id, name, email FROM users WHERE role = %s AND is_approved = %s"
+        query = """
+            SELECT 
+                u.id, 
+                u.name, 
+                u.email, 
+                u.phoneNumber,
+                COALESCE(tm.total_assigned_tickets, 0) AS total_assigned_tickets,
+                COALESCE(tm.total_resolved_tickets, 0) AS total_resolved_tickets
+            FROM users u
+            LEFT JOIN technician_metrics tm ON u.id = tm.technician_id
+            WHERE u.role = %s AND u.is_approved = %s
+        """
         cursor.execute(query, ('technician', True))
         result = cursor.fetchall()
 
@@ -34,7 +48,6 @@ def fetch_approved_technicians_from_db():
         return result
     except Exception as e:
         raise Exception(f"Database error: {str(e)}")
-
 def update_technician_approval_status(technician_id):
     try:
         connection = get_db_connection()
@@ -311,7 +324,20 @@ def close_ticket_in_db(ticket_id, status, closure_log, technician_id):
         cursor.execute(insert_log_query, (closure_log, datetime.now()))
         log_id = cursor.lastrowid  # Get the auto-incremented log_id
 
-        # Step 2: Update status in tickets table
+        # Step 2: Check if the ticket is an emergency ticket and update status
+        check_emergency_query = """
+        SELECT is_emergency
+        FROM tickets
+        WHERE ticket_id = %s
+        """
+        cursor.execute(check_emergency_query, (ticket_id,))
+        result = cursor.fetchone()
+        if not result:
+            connection.rollback()
+            print(f"No ticket found with ticket_id: {ticket_id}")
+            return False
+        is_emergency = result[0]
+
         update_ticket_status_query = """
         UPDATE tickets
         SET status = %s
@@ -320,7 +346,7 @@ def close_ticket_in_db(ticket_id, status, closure_log, technician_id):
         cursor.execute(update_ticket_status_query, (status, ticket_id))
         if cursor.rowcount == 0:
             connection.rollback()
-            print(f"No ticket found with ticket_id: {ticket_id}")
+            print(f"No ticket updated for ticket_id: {ticket_id}")
             return False
 
         # Step 3: Update closure_time and log_id in ticket_mapping table
@@ -336,14 +362,24 @@ def close_ticket_in_db(ticket_id, status, closure_log, technician_id):
             print(f"No ticket mapping found for ticket_id: {ticket_id} and technician_id: {technician_id}")
             return False
 
-        # Step 4: Update technician_metrics
-        update_metrics_query = """
-        UPDATE technician_metrics
-        SET total_resolved_tickets = total_resolved_tickets + 1,
-            today_resolved_tickets = today_resolved_tickets + 1,
-            current_assigned_tickets = current_assigned_tickets - 1
-        WHERE technician_id = %s
-        """
+        # Step 4: Update technician_metrics based on is_emergency
+        if is_emergency == 1:
+            update_metrics_query = """
+            UPDATE technician_metrics
+            SET total_resolved_tickets = total_resolved_tickets + 1,
+                today_resolved_tickets = today_resolved_tickets + 1,
+                current_assigned_tickets = current_assigned_tickets - 1,
+                sla_breached_slot = 0
+            WHERE technician_id = %s
+            """
+        else:
+            update_metrics_query = """
+            UPDATE technician_metrics
+            SET total_resolved_tickets = total_resolved_tickets + 1,
+                today_resolved_tickets = today_resolved_tickets + 1,
+                current_assigned_tickets = current_assigned_tickets - 1
+            WHERE technician_id = %s
+            """
         cursor.execute(update_metrics_query, (technician_id,))
         if cursor.rowcount == 0:
             connection.rollback()
@@ -352,6 +388,7 @@ def close_ticket_in_db(ticket_id, status, closure_log, technician_id):
 
         # Commit the transaction
         connection.commit()
+        assign_unassigned_tickets()
         return True
 
     except mysql.connector.Error as err:
@@ -361,6 +398,48 @@ def close_ticket_in_db(ticket_id, status, closure_log, technician_id):
         return False
     except Exception as e:
         print(f"Error: {e}")
+        if connection:
+            connection.rollback()
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+def assign_unassigned_tickets():
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Fetch all unassigned tickets, ordered by priority (High > Medium > Low)
+        cursor.execute("""
+            SELECT ticket_id, priority, user_id
+            FROM tickets
+            WHERE status = 'Open'
+            AND ticket_id NOT IN (SELECT ticket_id FROM ticket_mapping WHERE closure_time IS NULL)
+            ORDER BY FIELD(priority, 'High', 'Medium', 'Low')
+        """)
+        unassigned_tickets = cursor.fetchall()
+
+        for ticket in unassigned_tickets:
+            ticket_id, priority, user_id = ticket
+            # Calculate SLA deadline (consistent with new_ticket_creator)
+            priority_sla = {'high': 2, 'medium': 5, 'low': 36}
+            sla_hours = priority_sla.get(priority.lower(), 36)
+            sla_deadline = datetime.now() + timedelta(hours=sla_hours)
+
+            # Assign the ticket using existing function
+            assign_ticket_to_technician(ticket_id, user_id, priority, sla_deadline)
+
+        connection.commit()
+        return True
+
+    except Exception as e:
+        print(f"Error assigning tickets: {e}")
         if connection:
             connection.rollback()
         return False

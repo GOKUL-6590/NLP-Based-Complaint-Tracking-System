@@ -27,10 +27,10 @@ const TechnicianModal = ({ technician, onClose }) => {
                 </div>
                 <h3>{technician?.name || "Unknown"}</h3>
                 <div className="details">
-                    <p><strong>Role:</strong> {technician?.role || "N/A"}</p>
-                    <p><strong>Contact:</strong> {technician?.phone_number || "N/A"}</p>
-                    <p><strong>Total Tickets:</strong> {technician?.total_tickets || "N/A"}</p>
-                    <p><strong>Resolved Tickets:</strong> {technician?.resolved_tickets || "N/A"}</p>
+                    <p><strong>Email:</strong> {technician?.email || "N/A"}</p>
+                    <p><strong>Contact:</strong> {technician?.phoneNumber || "N/A"}</p>
+                    <p><strong>Total Tickets:</strong> {technician?.total_assigned_tickets || "N/A"}</p>
+                    <p><strong>Resolved Tickets:</strong> {technician?.total_resolved_tickets || "N/A"}</p>
                 </div>
             </div>
         </div>

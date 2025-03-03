@@ -37,7 +37,6 @@ def update_user_password(email, new_hashed_password):
 def create_user(name, email, password, role, phone_number, is_approved=True):
     try:
         # Hash the password before storing it
-        hashed_password = generate_password_hash(password)
 
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -46,7 +45,7 @@ def create_user(name, email, password, role, phone_number, is_approved=True):
         cursor.execute("""
             INSERT INTO users (name, email, password, role, phoneNumber, is_approved)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (name, email, hashed_password, role, phone_number, is_approved))
+        """, (name, email, password, role, phone_number, is_approved))
 
         conn.commit()
 
