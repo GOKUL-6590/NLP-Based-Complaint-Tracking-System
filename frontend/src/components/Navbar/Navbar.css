@@ -1,0 +1,352 @@
+.layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    width: 100vw;
+    /* Ensure layout takes full viewport width */
+}
+
+
+/* Sidebar Styling */
+.sidebar {
+    width: 250px;
+    background-color: #1e293b;
+    /* Dark slate color */
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.collapsed-sidebar {
+    width: 70px;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffffff;
+    font-size: 32px;
+    /* Increased font size for app name */
+    font-weight: 600;
+    transition: font-size 0.3s ease, gap 0.3s ease;
+}
+
+.collapsed .app-name {
+    gap: 5px;
+    font-size: 18px;
+    /* Reduced font size for collapsed state */
+}
+
+.app-logo {
+    height: 50px;
+    /* Adjusted logo size */
+    transition: height 0.3s ease;
+}
+
+.collapsed .app-logo {
+    height: 35px;
+    /* Smaller logo size when collapsed */
+}
+
+.collapsed .collapsed-app-logo {
+    height: 30px;
+}
+
+.collapsed-app-logo {
+    height: 40px;
+    /* Adjusted logo size for collapsed state */
+}
+
+/* Ensuring the app name and logo are spaced nicely in both states */
+.sidebar-header .app-name span {
+    font-size: 20px;
+    /* Adjusting app name size when expanded */
+}
+
+.collapsed .sidebar-header .app-name span {
+    display: none;
+    /* Hide app name text in collapsed state */
+}
+
+
+.app-name img {
+    height: 40px;
+}
+
+.collapsed-app-logo {
+    height: 30px;
+}
+
+/* Menu Styling */
+.menu {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 10px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #cbd5e1;
+    /* Neutral light color */
+}
+
+.menu-item:hover {
+    background-color: #334155;
+    /* Slightly lighter than the sidebar */
+    color: #ffffff;
+}
+
+.menu-item.active {
+    background-color: #475569;
+    /* Darker slate color */
+    color: #ffffff;
+}
+
+.collapsed-menu-item {
+    justify-content: center;
+}
+
+.menu-item i {
+    font-size: 20px;
+}
+
+/* Main Content */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-left: 250px;
+    /* Adjust the initial width if the sidebar is wider */
+    transition: margin-left 0.3s ease;
+    padding: 0;
+}
+
+.collapsed-content {
+    margin-left: 70px;
+    /* Adjust this when the sidebar is collapsed */
+}
+
+
+/* Topbar Styling */
+.topbar {
+    height: 60px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: calc(100% - 250px);
+    /* Ensures topbar doesn't overlap with sidebar */
+    left: 250px;
+    /* Keeps the topbar aligned with the content area */
+    top: 0;
+    z-index: 10;
+}
+
+.collapsed-content .topbar {
+    width: calc(100% - 70px);
+    /* Ensures topbar adjusts when sidebar is collapsed */
+    left: 70px;
+}
+
+.collapse-btn,
+.notification-btn,
+.logout-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.collapse-btn:hover,
+.notification-btn:hover,
+.logout-btn:hover {
+    transform: scale(1.1);
+}
+
+.notification-btn {
+    position: relative;
+}
+
+.notification-badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
+
+.logout-btn {
+    color: #ef4444;
+    /* Red for logout */
+}
+
+.logout-btn:hover {
+    color: #dc2626;
+    /* Slightly darker red */
+}
+
+/* Body Content */
+.body {
+
+    padding: 80px 20px 20px;
+    /* Ensure content isn't hidden behind the fixed topbar */
+
+
+    /* Light slate background */
+    overflow-y: auto;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+@media screen and (max-width:600px) {
+    .collapsed-sidebar {
+        display: none
+    }
+
+    .sidebar {
+        border-radius: 0;
+
+    }
+
+    .collapsed-sidebar {
+        border-radius: 0;
+
+    }
+
+    .body {
+        height: max-content;
+        overflow-x: scroll;
+        overflow-y: scroll;
+    }
+
+    .header {
+        background-color: #005555;
+        border-radius: 0;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        position: fixed;
+        overflow: hidden;
+        z-index: 50;
+        min-height: 50%;
+        border-bottom-right-radius: 10px;
+        width: 240px;
+        padding-bottom: 20px;
+    }
+
+    .topbar {
+        width: 100%;
+        left: -10;
+    }
+
+    .mobilenav-close {
+        display: block;
+        justify-content: end;
+        margin-left: 100px;
+        margin-top: 9px;
+    }
+
+    .logo {
+        font-size: 48px;
+    }
+
+    .collapsed-content .topbar {
+        width: 100%;
+        left: 0px;
+        background-color: #1e293b;
+        color: white;
+    }
+
+    .topbar {
+        background-color: #1e293b;
+        color: white;
+
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    .mobile-nav {
+        display: inline-block;
+    }
+
+    .notification-btn,
+    .close-nav,
+    .mobile-nav {
+        color: white;
+    }
+
+
+}
+
+/* Responsive Design */
+/* @media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        z-index: 100;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+        transform: translateX(0);
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    .topbar {
+        width: 100%;
+        left: 0;
+    }
+} */

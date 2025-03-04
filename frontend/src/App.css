@@ -1,0 +1,52 @@
+/* Ensure full width and no extra margin for body */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  /* Ensure body takes up full viewport height */
+}
+
+/* Ensure the HTML element takes up the full width and height */
+html {
+  width: 100%;
+  height: 100%;
+}
+
+/* Fix any issue with body overflow */
+body,
+html {
+  overflow-x: hidden;
+  /* Prevent horizontal overflow */
+}
+
+/* Set the main layout container to take full width and height */
+.layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+  /* Prevent content from spilling */
+}
+
+/* Remove any extra space or margins in the content area */
+.content {
+  width: 100%;
+  /* Ensure content takes full width */
+  overflow: auto;
+  /* Allow scrolling */
+}
+
+/* If sidebar is fixed or floating, ensure it doesn't cause overflow */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 999;
+}
+
+.layout.collapsed .sidebar {
+  width: 60px;
+}

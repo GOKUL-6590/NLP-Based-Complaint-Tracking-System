@@ -1,0 +1,188 @@
+/* Modal Overlay */
+.ticket-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.ticket-details-content {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 1000px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #ff7675;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: #d63031;
+}
+
+/* Modal Header */
+.modal-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 16px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #2d3436;
+}
+
+.ticket-id {
+    font-size: 1rem;
+    color: #636e72;
+}
+
+/* Grid Layout */
+.modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+/* Modal Sections */
+.modal-section {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.modal-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 1.2rem;
+    color: #2d3436;
+}
+
+/* Detail Items */
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #636e72;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #2d3436;
+}
+
+/* Timeline */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #6c5ce7;
+    border-radius: 50%;
+}
+
+.timeline-text {
+    font-size: 0.95rem;
+    color: #2d3436;
+}
+
+/* Progress Bar */
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    padding: 10px 0;
+}
+
+.progress-line {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    width: 90%;
+    height: 4px;
+    background-color: #e0e0e0;
+    z-index: 1;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.progress-fill {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    height: 4px;
+    background-color: #6c5ce7;
+    width: 0%;
+    border-radius: 2px;
+    z-index: 2;
+    transition: width 1s ease-in-out;
+}
+
+/* Status Checkpoints */
+.progress-step {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 3;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.progress-step.active {
+    background-color: #6c5ce7;
+    transform: scale(1.2);
+    color: white;
+}
+
+/* Progress Text */
+.progress-text {
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 10px;
+    color: #2d3436;
+}

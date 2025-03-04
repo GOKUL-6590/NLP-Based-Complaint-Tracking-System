@@ -1,0 +1,234 @@
+/* Modal Overlay */
+.assign-technician-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+
+/* Modal Content */
+.modal-content {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    /* Deep shadow for depth */
+    position: relative;
+    z-index: 1001;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Modal Header */
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Modal Container */
+
+
+/* Modal Header */
+.modal-header {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.ticket-id {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Technician List */
+.technician-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.technician-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.technician-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+/* Technician Item */
+.technician-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    transition: all 0.2s ease-in-out;
+}
+
+.technician-container:hover {
+    background: #eaeaea;
+}
+
+/* Technician Info */
+.technician-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.technician-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    margin-right: 6px;
+}
+
+/* Slot Information */
+.slots-info {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.slot {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.slot.available {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.slot.filled {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Assign Buttons */
+.assign-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.assign-button {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.assign-button:hover {
+    opacity: 0.8;
+}
+
+.assign-button.selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.assign-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.cancel-button {
+    background: #ccc;
+    color: #333;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: background 0.2s ease-in-out;
+}
+
+.cancel-button:hover {
+    background: #bbb;
+}
+
+.assign-button {
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+.assign-button:hover {
+    background: #0056b3;
+}
+
+/* No Technicians Available */
+.no-technicians {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    padding: 10px 0;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .assign-technician-modal {
+        width: 95%;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .cancel-button,
+    .assign-button {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+}

@@ -1,7 +1,10 @@
+# Combined .gitignore
 dfd/
 weekly log/week1/
 results/
 ssh
 ssh.pub
-backend/__pycache__/
+trained_model/
 __pycache__/
+backend/__pycache__/
+frontend/.vite/  # Add this to exclude untracked .vite/

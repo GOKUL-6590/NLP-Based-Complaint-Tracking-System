@@ -1,0 +1,225 @@
+/* Page Layout */
+.admin-dashboard {
+    padding: 20px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f5f7fa 0%, #ebedf0 100%);
+    font-family: "Poppins", sans-serif;
+}
+
+/* Header */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    margin-bottom: 25px;
+}
+
+.dashboard-header.animate-on-load {
+    animation: slideInFromTop 0.5s ease-out forwards;
+}
+
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-header h1 {
+    font-size: 26px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.current-date {
+    font-size: 16px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.dashboard-cards.animate-on-load {
+    animation: fadeIn 0.7s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.card p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Dashboard Charts */
+.dashboard-charts {
+    margin-top: 30px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-charts.animate-on-load {
+    animation: slideInFromBottom 0.7s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+@keyframes slideInFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-charts h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 15px;
+    }
+
+    .dashboard-header {
+        padding: 12px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 22px;
+    }
+
+    .current-date {
+        font-size: 14px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .card h3 {
+        font-size: 16px;
+    }
+
+    .card p {
+        font-size: 20px;
+    }
+
+    .dashboard-charts {
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .dashboard-charts h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-dashboard {
+        padding: 10px;
+    }
+
+    .dashboard-header {
+        padding: 10px 15px;
+        gap: 8px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 20px;
+    }
+
+    .current-date {
+        font-size: 12px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+    .card p {
+        font-size: 18px;
+    }
+
+    .dashboard-charts {
+        margin-top: 15px;
+        padding: 12px;
+    }
+
+    .dashboard-charts h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+}

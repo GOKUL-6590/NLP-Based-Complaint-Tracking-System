@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon3.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" />
+
+  <title>TickiFy</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-messaging.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./public/firebase-messaging-sw.js")
+        .then(registration => console.log("Service Worker registered:", registration))
+        .catch(error => console.error("Service Worker registration failed:", error));
+    }
+  </script>
+
+
+</body>
+
+</html>
