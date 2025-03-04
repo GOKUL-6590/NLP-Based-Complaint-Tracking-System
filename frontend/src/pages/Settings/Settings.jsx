@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./Settings.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast"; // For better notifications
+import { updateUserPassword } from "../../service/auth_service";
 
 const Settings = () => {
     const { user } = useSelector((state) => state.user);
@@ -8,39 +10,46 @@ const Settings = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [notifications, setNotifications] = useState(true);
+    const dispatch = useDispatch()
 
-    const handlePasswordChange = (e) => {
+    const handlePasswordChange = async (e) => {
         e.preventDefault();
 
-        if (oldPassword !== user.password) {
-            alert("Incorrect old password!");
-            return;
-        }
-
-        if (newPassword.length < 6) {
-            alert("Password must be at least 6 characters long.");
+        // Client-side validation
+        if (newPassword.length < 4) {
+            toast.error("Password must be at least 4 characters long.");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            alert("New passwords do not match!");
+            toast.error("New passwords do not match!");
             return;
         }
 
-        alert("Password updated successfully!");
+        try {
+            const response = await updateUserPassword(user.id, oldPassword, newPassword);
+            if (response.success) {
+                toast.success(response.message || "Password updated successfully!");
+                // Reset form
+                setOldPassword("");
+                setNewPassword("");
+                setConfirmPassword("");
+            } else {
+                toast.error(response.message || "Failed to update password.");
+            }
+        } catch (error) {
+            toast.error(error.message || "An error occurred while updating the password.");
+        }
     };
 
     const handleNotificationToggle = () => {
         setNotifications(!notifications);
-        alert(`Notifications ${notifications ? "disabled" : "enabled"}`);
+        toast.success(`Notifications ${notifications ? "disabled" : "enabled"}`);
     };
 
     return (
-        <div class="settings-page">
-            <div class="settings-container">
-
-
-
+        <div className="settings-page">
+            <div className="settings-container">
                 <h2 className="settings-header">Settings</h2>
                 <div className="settings-grid">
                     {/* Profile Section */}

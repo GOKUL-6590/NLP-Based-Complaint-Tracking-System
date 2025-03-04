@@ -79,7 +79,7 @@ export const getRequestedSpares = async (ticketId) => {
     }
 };
 
-// In TechnicianService.js
+
 export const closeTicket = async (ticketId, status, closureLog, technician_id, userId) => {
     try {
         const requestData = {

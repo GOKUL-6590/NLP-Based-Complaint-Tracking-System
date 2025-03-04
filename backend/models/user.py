@@ -77,6 +77,48 @@ def get_user_by_email(email):
 
     return user  # Will return None if user doesn't exist
 
+def get_user_by_id(user_id):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return user
+
+def update_user_password(user_id, hashed_password):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Update the password for the user with the given ID
+        query = "UPDATE users SET password = %s WHERE id = %s"
+        cursor.execute(query, (hashed_password.decode('utf-8'), user_id))  # Decode bytes to string for varchar
+        conn.commit()
+
+        # Check if any rows were affected (i.e., user exists)
+        if cursor.rowcount == 0:
+            return False
+
+        return True
+
+    except mysql.connector.Error as err:
+        print(f"Error updating password: {err}")
+        return False
+
+    finally:
+        cursor.close()
+        conn.close()
+
 def get_all_admins():
     """Fetch all admin users from the database"""
     try:

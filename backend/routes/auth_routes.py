@@ -1,5 +1,5 @@
 from flask import Blueprint, json, request, jsonify
-from ..controller.auth_controller import register_user, login_user
+from ..controller.auth_controller import register_user, login_user, update_password
 
 auth_bp = Blueprint('auth_bp', __name__)
 
@@ -16,3 +16,8 @@ def register():
 def login():
     data = json.loads(request.data.decode('utf-8'))
     return login_user(data)
+
+@auth_bp.route('/update-password', methods=['PUT'])
+def update_password_route():
+    data = json.loads(request.data.decode('utf-8'))
+    return update_password(data)  # Forward to controller

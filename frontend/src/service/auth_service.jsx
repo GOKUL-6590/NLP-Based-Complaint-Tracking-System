@@ -36,3 +36,33 @@ export const loginUser = async (userData) => {
         }
     }
 };
+
+export const updateUserPassword = async (userId, oldPassword, newPassword) => {
+    try {
+        const response = await axios.put(
+            `${API_URL}/update-password`,
+            {
+                userId,
+                oldPassword,
+                newPassword,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
+        console.log(response + " in adminService"); 
+
+        return response.data; 
+    } catch (error) {
+        console.error('Error during password update:', error.response?.data || error.message);
+
+        if (error.response) {
+            throw new Error(error.response.data.message || 'Password update failed. Please try again.');
+        } else {
+            throw new Error('Network or server error occurred.');
+        }
+    }
+};
