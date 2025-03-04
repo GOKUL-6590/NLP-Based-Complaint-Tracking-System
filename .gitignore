@@ -7,7 +7,7 @@ ssh.pub
 trained_model/
 __pycache__/
 backend/__pycache__/
-frontend/.vite/  # Add this to exclude untracked .vite/
+frontend/.vite/ 
 __pycache__/
 backend/__pycache__/
 backend/routes/__pycache__/
