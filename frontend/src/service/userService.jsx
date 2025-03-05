@@ -51,5 +51,29 @@ export const getTicketHistoryByUser = async (userId) => {
     }
 };
 
+export const getTicketDetails = async (ticketId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/tickets/${ticketId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch ticket details");
+    }
+};
+
+export const submitTicketFeedback = async (ticketId, feedback, userId, token) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/tickets/${ticketId}/feedback`,
+            { feedback, userId },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to submit feedback");
+    }
+};
+
 
 

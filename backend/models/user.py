@@ -561,3 +561,99 @@ def get_tickets_by_userid(userid):
     except Exception as e:
         print(f"Error retrieving tickets: {str(e)}")
         return []
+
+def get_ticket_by_id(ticket_id):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Fetch ticket details with user and technician names
+        ticket_query = """
+            SELECT 
+                t.ticket_id, t.system_number, t.venue, t.block, t.category, 
+                t.description, t.status, t.priority, t.created_at, t.last_updated, t.is_emergency,
+                tm.id AS mapping_id, tm.user_id, tm.technician_id, tm.started_time, tm.closure_time, 
+                tm.assigned_by_admin, tm.sla_deadline,
+                u.name AS user_name,
+                tech.name AS technician_name
+            FROM tickets t
+            LEFT JOIN ticket_mapping tm ON t.ticket_id = tm.ticket_id
+            LEFT JOIN users u ON tm.user_id = u.id
+            LEFT JOIN users tech ON tm.technician_id = tech.id
+            WHERE t.ticket_id = %s
+        """
+        cursor.execute(ticket_query, (ticket_id,))
+        ticket = cursor.fetchone()
+
+        if not ticket:
+            cursor.close()
+            conn.close()
+            return None  # No ticket found
+
+        # Fetch attachments
+        attachments_query = """
+            SELECT id, ticket_id, file_name, file_path, uploaded_at
+            FROM attachments
+            WHERE ticket_id = %s
+        """
+        cursor.execute(attachments_query, (ticket_id,))
+        attachments = cursor.fetchall()
+
+        # Fetch spare requests with item_name from inventory
+        spares_query = """
+            SELECT 
+                sr.request_id, sr.ticket_id, sr.technician_id, sr.quantity, 
+                sr.approval_status, sr.requested_at, sr.approved_by, sr.approved_at, sr.part_id,
+                u.name AS approved_by_name,
+                i.item_name AS part_name
+            FROM spare_requests sr
+            LEFT JOIN users u ON sr.approved_by = u.id
+            LEFT JOIN inventory i ON sr.part_id = i.id
+            WHERE sr.ticket_id = %s
+        """
+        cursor.execute(spares_query, (ticket_id,))
+        spare_requests = cursor.fetchall()
+
+        # Fetch closure logs (via log_id from ticket_mapping)
+        closure_logs_query = """
+            SELECT cl.log_id, cl.log, cl.timestamp
+            FROM closure_logs cl
+            WHERE cl.log_id = %s
+        """
+        log_id = ticket.get('log_id')  # Assuming ticket_mapping has a log_id field
+        closure_logs = []
+        if log_id:
+            cursor.execute(closure_logs_query, (log_id,))
+            closure_logs = cursor.fetchall()
+
+        # Fetch ticket feedback
+        feedback_query = """
+            SELECT 
+                tf.feedback_id, tf.ticket_id, tf.user_id, tf.technician_id, 
+                tf.rating, tf.comments, tf.submitted_at,
+                u.name AS feedback_user_name,
+                tech.name AS feedback_technician_name
+            FROM ticket_feedback tf
+            LEFT JOIN users u ON tf.user_id = u.id
+            LEFT JOIN users tech ON tf.technician_id = tech.id
+            WHERE tf.ticket_id = %s
+        """
+        cursor.execute(feedback_query, (ticket_id,))
+        feedback = cursor.fetchall()
+
+        # Combine all data into a single dictionary
+        ticket_details = {
+            "ticket": ticket,
+            "attachments": attachments,
+            "spare_requests": spare_requests,
+            "closure_logs": closure_logs,
+            "feedback": feedback
+        }
+
+        cursor.close()
+        conn.close()
+        return ticket_details
+
+    except Exception as e:
+        print(f"Error retrieving ticket details: {str(e)}")
+        return None

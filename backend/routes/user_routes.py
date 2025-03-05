@@ -6,6 +6,7 @@ from ..controller.user_controller import (
     delete_all_notifications_by_receiver,
     dispute_ticket,
     fetch_notifications,
+    get_ticket_details_by_id,
     get_unread_notifications_count,
     get_user_dashboard,
     get_user_tickets_by_id,
@@ -211,3 +212,20 @@ def get_ticket_history():
             'success': False,
             'error': str(e)
         }), 500
+
+@user_bp.route('/tickets/<ticket_id>', methods=['GET'])
+def get_ticket_details(ticket_id):
+    try:
+        # No additional parameters needed from request.args since ticket_id is in the URL
+        if not ticket_id:
+            return jsonify({"error": "Ticket ID is required"}), 400
+        
+        # Forward to controller
+        return get_ticket_details_by_id(ticket_id)
+    except Exception as e:
+        return jsonify({
+            "message": "An unexpected error occurred while fetching the ticket details.",
+            "success": False,
+            "error": str(e)
+        }), 500
+

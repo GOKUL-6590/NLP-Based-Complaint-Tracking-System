@@ -6,7 +6,7 @@ import json
 
 from backend.NLP.classifier import classify_complaint
 from backend.models.technician import assign_unassigned_tickets
-from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_tickets_by_userid, get_tickets_stats
+from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_tickets_by_userid, get_tickets_stats
 from ..models.notifications import  delete_notifications_by_receiver, get_notifications_by_receiver, get_unread_notifications_count_by_userid, mark_all_notification_as_read, mark_notification_as_read, save_fcm_token_to_db
 from flask import jsonify
 from datetime import datetime, timedelta
@@ -276,18 +276,6 @@ def get_user_dashboard():
         }), 500
     
 
-# def send_unread_count_update(user_id):
-#     unread_count_response = get_unread_notifications_count(user_id)
-#     print(unread_count_response)
-    
-#     if unread_count_response[1] == 200:  # Success status code
-#         response_data = json.loads(unread_count_response[0].get_data(as_text=True))  # ✅ Correct JSON parsing
-#         unread_count = response_data.get('count', 0)  # ✅ Get 'count' with default 0
-#         print(f"Emitting unread count: {unread_count} for user {user_id}")  # Debugging
-#         SocketIO.emit('unread-notifications', {'count': unread_count}, room=user_id)
-#     else:
-#         print(f"Error getting unread count for user {user_id}")
-
 
 def dispute_ticket(ticket_id):
     """
@@ -356,4 +344,35 @@ def get_user_tickets_by_id(user_id):
             "error": str(e)
         }), 500
  
+def get_ticket_details_by_id(ticket_id):
+    try:
+        # Validate ticket_id
+        if not ticket_id:
+            return jsonify({
+                "message": "Ticket ID is required.",
+                "success": False
+            }), 400
 
+        # Call model function to fetch ticket details
+        ticket = get_ticket_by_id(ticket_id)
+
+        if ticket is None:
+            return jsonify({
+                "message": "Ticket not found or failed to fetch ticket details.",
+                "success": False
+            }), 404
+
+        return jsonify({
+            "message": "Ticket details fetched successfully.",
+            "ticket": ticket,
+            "success": True
+        }), 200
+
+    except Exception as e:
+        print(f"Error fetching ticket details: {str(e)}")
+        return jsonify({
+            "message": "An unexpected error occurred. Please try again later.",
+            "success": False,
+            "error": str(e)
+        }), 500
+    
