@@ -98,6 +98,10 @@
     /* Start hidden */
 }
 
+.stats-container h1 {
+    font-size: 22px;
+}
+
 /* Staggered animation for metric items */
 .metric-item:nth-child(1) {
     animation-delay: 0.3s;

@@ -114,19 +114,19 @@ function TechnicianDashboard() {
             <div className="dashboard-row first-row-tech">
                 <div className="stats-container">
                     <div className="metric-item">
-                        <h2>{stats.totalTickets}</h2>
+                        <h1>{stats.totalTickets}</h1>
                         <span>Total Assigned</span>
                     </div>
                     <div className="metric-item">
-                        <h2>{stats.resolvedToday}</h2>
+                        <h1>{stats.resolvedToday}</h1>
                         <span>Resolved Today</span>
                     </div>
                     <div className="metric-item">
-                        <h2>{stats.highPriorityPending}</h2>
+                        <h1>{stats.highPriorityPending}</h1>
                         <span>High Priority</span>
                     </div>
                     <div className="metric-item">
-                        <h2>{stats.inProgressTickets}</h2>
+                        <h1>{stats.inProgressTickets}</h1>
                         <span>In Progress</span>
                     </div>
                 </div>

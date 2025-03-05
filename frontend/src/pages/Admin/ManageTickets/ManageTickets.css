@@ -57,10 +57,8 @@
 
 .section-title {
     margin: 0;
-    font-size: 1.6rem;
-    /* Slightly larger for emphasis */
+    font-size: 24px;
     font-weight: 700;
-    color: #2d3436;
     letter-spacing: 0.5px;
     /* Subtle spacing for elegance */
     transition: color 0.3s ease;

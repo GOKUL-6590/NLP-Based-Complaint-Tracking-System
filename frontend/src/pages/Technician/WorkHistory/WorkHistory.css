@@ -7,9 +7,8 @@
 
 /* Header */
 .work-history-container h2 {
-    font-size: 1.8rem;
+    font-size: 26px;
     font-weight: 600;
-    color: #2d3436;
     margin-bottom: 16px;
 }
 
@@ -118,7 +117,8 @@
 @media (max-width: 768px) {
     .work-history-container {
         padding: 16px;
-        min-height: auto; /* Allow natural height */
+        min-height: auto;
+        /* Allow natural height */
     }
 
     .work-history-container h2 {
@@ -145,8 +145,10 @@
 
     .table-wrapper {
         padding: 12px;
-        min-height: auto; /* Allow natural height */
-        max-height: none; /* Remove max height for scrolling */
+        min-height: auto;
+        /* Allow natural height */
+        max-height: none;
+        /* Remove max height for scrolling */
     }
 
     .work-table th,
@@ -208,6 +210,7 @@
     .work-table td:nth-child(4),
     .work-table th:nth-child(7),
     .work-table td:nth-child(7) {
-        display: none; /* Hide Priority and Created At on very small screens */
+        display: none;
+        /* Hide Priority and Created At on very small screens */
     }
 }

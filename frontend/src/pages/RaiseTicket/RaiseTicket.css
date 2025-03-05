@@ -5,14 +5,14 @@
     width: 100%;
     margin: 0 auto;
     font-family: Arial, sans-serif;
+    padding: 24px;
 }
 
 .form-title {
     grid-column: span 2;
-    text-align: center;
-    font-size: 24px;
+    text-align: left;
+    font-size: 26px;
     margin-bottom: 20px;
-    color: #333;
 }
 
 .form-group {
