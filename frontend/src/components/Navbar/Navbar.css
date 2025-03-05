@@ -138,6 +138,34 @@
     font-size: 20px;
 }
 
+.menu-item.collapsed-menu-item {
+    position: relative;
+}
+
+.menu-tooltip {
+    position: absolute;
+    left: 60px;
+    /* Position to the right of the icon */
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #0b2d5dcc;
+    /* Dark slate matching hover */
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.menu-item.collapsed-menu-item:hover .menu-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Main Content */
 .content {
     flex: 1;
@@ -226,6 +254,30 @@
     /* Slightly darker red */
 }
 
+/* Topbar App Name for Mobile View */
+.topbar-left {
+    display: flex;
+    align-items: center;
+}
+
+/* Topbar App Name for Mobile View */
+.mobile-app-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    /* White to match topbar text */
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.topbar-app-logo {
+    height: 30px;
+    /* Smaller logo for topbar */
+}
+
+/* Ensure app name is hidden in desktop view or when sidebar is open */
+
 /* Body Content */
 .body {
 
@@ -239,6 +291,12 @@
 
 .mobile-nav {
     display: none;
+}
+
+@media (min-width: 769px) {
+    .mobile-app-name {
+        display: none;
+    }
 }
 
 @media screen and (max-width:600px) {
@@ -324,8 +382,14 @@
         color: white;
     }
 
+    .menu-tooltip {
+        display: none;
+    }
+
+
 
 }
+
 
 /* Responsive Design */
 /* @media (max-width: 768px) {

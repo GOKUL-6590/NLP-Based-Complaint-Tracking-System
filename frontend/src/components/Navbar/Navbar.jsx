@@ -125,8 +125,7 @@ function Navbar({ children }) {
 
                         return (
                             <div
-                                className={`menu-item ${isActive ? "active" : ""} ${collapsed ? "collapsed-menu-item" : ""
-                                    }`}
+                                className={`menu-item ${isActive ? "active" : ""} ${collapsed ? "collapsed-menu-item" : ""}`}
                                 key={menu.name}
                                 onClick={() => {
                                     navigate(menu.path);
@@ -135,6 +134,9 @@ function Navbar({ children }) {
                             >
                                 <i className={`ri ${menu.icon}`}></i>
                                 {!collapsed && <span>{menu.name}</span>}
+                                {collapsed && !isMobile && (
+                                    <span className="menu-tooltip">{menu.name}</span>
+                                )}
                             </div>
                         );
                     })}
@@ -156,12 +158,16 @@ function Navbar({ children }) {
                                 <i className="ri-arrow-left-s-line close-nav"></i>
                             )}
                         </button>
+                        {/* Show app name in topbar only in mobile view when sidebar is collapsed */}
+                        {isMobile && collapsed && (
+                            <span className="mobile-app-name">
+                               
+                                Tikify
+                            </span>
+                        )}
                     </div>
                     <div className="topbar-right">
-                        <button
-                            className="notification-btn"
-                            onClick={() => navigate("/notifications")}
-                        >
+                        <button className="notification-btn" onClick={() => navigate("/notifications")}>
                             <i className="ri-notification-line"></i>
                             {notifications > 0 && (
                                 <span className="notification-badge">{notifications}</span>
