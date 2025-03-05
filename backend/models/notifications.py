@@ -7,7 +7,9 @@ import mysql.connector
 import requests
 import firebase_admin
 from firebase_admin import credentials, messaging
-
+from datetime import datetime
+from firebase_admin import messaging
+from backend.utils.db_utils import get_db_connection  
 # Firebase Cloud Messaging (FCM) configuration
 # FCM_SERVER_KEY = "BJHJXiz83xlAzyzk9jRhOaOd9fbuL6oyE96Y_wExtE1ZyMjlpUyDr0Hb0AbKYEYJHG-xHEdSv7EcB3szhZ40Uoo"
 # FCM_URL = "https://fcm.googleapis.com/fcm/send"
@@ -16,15 +18,13 @@ from firebase_admin import credentials, messaging
 # cred = credentials.Certificate("C:/Users/haris/Desktop/s8-project/backend/firebase-service-account.json")
 # firebase_admin.initialize_app(cred)
 
-
 def get_notifications_by_receiver(receiver_id):
-    """Fetch notifications for a specific receiver."""
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
         query = """
-            SELECT id, sender_id, sender_name, message, timestamp, is_read, type
+            SELECT id, sender_id, sender_name, message, timestamp, is_read, type, link_url
             FROM notifications
             WHERE receiver_id = %s
             ORDER BY timestamp DESC;
@@ -37,7 +37,8 @@ def get_notifications_by_receiver(receiver_id):
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
-
+    
+    
 def mark_notification_as_read(notification_id):
     """Mark a notification as read."""
     try:
@@ -74,20 +75,18 @@ def create_notification(sender_id, receiver_id, sender_name, message, notificati
 
 
 
-def send_notification(sender_id, receiver_id, sender_name, message, notification_type):
-    """
-    Sends a push notification using Firebase Cloud Messaging (FCM).
-    """
+
+def send_notification(sender_id, receiver_id, sender_name, message, notification_type, link_url=None):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # Insert notification into the database
+        # Insert notification into the database with link_url
         query = """
-            INSERT INTO notifications (sender_id, receiver_id, sender_name, message, type, timestamp, is_read)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO notifications (sender_id, receiver_id, sender_name, message, type, link_url, timestamp, is_read)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(query, (sender_id, receiver_id, sender_name, message, notification_type, datetime.now(), 0))
+        cursor.execute(query, (sender_id, receiver_id, sender_name, message, notification_type, link_url, datetime.now(), 0))
         conn.commit()
 
         # Retrieve the recipient's FCM token
@@ -98,7 +97,7 @@ def send_notification(sender_id, receiver_id, sender_name, message, notification
             fcm_token = token_row[0]
 
             # Construct the notification payload
-            message = messaging.Message(
+            message_payload = messaging.Message(
                 token=fcm_token,
                 notification=messaging.Notification(
                     title=f"Message from {sender_name}",
@@ -107,11 +106,12 @@ def send_notification(sender_id, receiver_id, sender_name, message, notification
                 data={
                     "type": notification_type,
                     "sender_id": str(sender_id),
+                    "link_url": link_url if link_url else ""  # Include link_url in FCM data payload
                 }
             )
 
             # Send the notification via Firebase
-            response = messaging.send(message)
+            response = messaging.send(message_payload)
             print(f"Notification sent successfully: {response}")
 
         else:
@@ -123,6 +123,7 @@ def send_notification(sender_id, receiver_id, sender_name, message, notification
         cursor.close()
         conn.close()
 
+        
 def approve_or_reject_technician(technician_id, action):
     """
     Approve or reject a technician based on the action ('approve' or 'reject').

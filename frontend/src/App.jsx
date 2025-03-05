@@ -23,6 +23,7 @@ import Inventory from "./pages/Admin/Inventory/Inventory";
 import TechnicianDashboard from "./pages/Technician/Dashboard/TechnicianDashboard";
 import Spinner from "./Spinner/Spinner";
 import { useSelector } from "react-redux";
+import TicketDetails from "./pages/TicketPage/TicketPage";
 const firebaseConfig = {
   apiKey: "AIzaSyD-JBtXIwsepQCkVykF7ZTaBR_tHYp_xM8",
   authDomain: "complainttrackingsystem-8bf08.firebaseapp.com",
@@ -72,7 +73,7 @@ function App() {
                   <Route path="/technician/work-history" element={<WorkHistory />} />
                   <Route path="/admin/reports" element={<AdminReports />} />
                   <Route path="/admin/inventory" element={<Inventory />} />
-
+                  <Route path="/ticket/:ticketId" element={<TicketDetails />} /> 
 
                 </Routes>
               </Navbar>

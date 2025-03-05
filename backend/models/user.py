@@ -266,22 +266,25 @@ def assign_ticket_to_technician(ticket_id, userid, priority, sla_deadline):
             connection.commit()
 
             # Send notifications to both technician and user
+            link_url = "/technician/assigned-tickets"
             send_notification(
-                sender_id=userid, 
-                receiver_id=technician_id, 
-                sender_name='System', 
-                message=f"You have been assigned a new ticket (ID: {ticket_id}) with priority: {priority}.", 
-                notification_type='Technician Assignment'
+                sender_id=userid,
+                receiver_id=technician_id,
+                sender_name='System',
+                message=f"You have been assigned a new ticket (ID: {ticket_id}) with priority: {priority}.",
+                notification_type='Technician Assignment',
+                link_url=link_url
             )
 
+            link_url = f"/ticket/{ticket_id}"
             send_notification(
-                sender_id=userid, 
-                receiver_id=userid, 
-                sender_name='System', 
-                message=f"Your ticket (ID: {ticket_id}) has been assigned to technician {technician_name}.", 
-                notification_type='Ticket Assignment'
+                sender_id=userid,
+                receiver_id=userid,
+                sender_name='System',
+                message=f"Your ticket (ID: {ticket_id}) has been assigned to technician {technician_name}.",
+                notification_type='Ticket Assignment',
+                link_url=link_url
             )
-
             print(f"Ticket {ticket_id} assigned to technician {technician_name}. Status updated to 'Assigned'.")
 
         else:
@@ -294,12 +297,14 @@ def assign_ticket_to_technician(ticket_id, userid, priority, sla_deadline):
             connection.commit()
 
             # Send notification to the user
+            link_url = f"/ticket/{ticket_id}"
             send_notification(
-                sender_id=userid, 
-                receiver_id=userid, 
-                sender_name='System', 
-                message=f"Your ticket (ID: {ticket_id}) has been created but no technician has been assigned yet.", 
-                notification_type='Ticket Created'
+                sender_id=userid,
+                receiver_id=userid,
+                sender_name='System',
+                message=f"Your ticket (ID: {ticket_id}) has been created but no technician has been assigned yet.",
+                notification_type='Ticket Created',
+                link_url=link_url
             )
 
             print(f"Ticket {ticket_id} added to the mapping table without a technician.")

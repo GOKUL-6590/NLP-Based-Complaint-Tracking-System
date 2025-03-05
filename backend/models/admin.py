@@ -281,12 +281,14 @@ def assign_ticket_to_technician_by_admin(ticket_id, technician_id, assign_type):
                 user_id = user_id[0]  # Fetch the user_id from the query result
 
                 # Send notification to the user who created the ticket
+                link_url = f"/ticket/{ticket_id}"
                 send_notification(
-                    sender_id=1,  # Assuming 1 is the admin/system user
+                    sender_id=1,
                     receiver_id=user_id,
                     sender_name="Admin",
                     message=f"Your ticket (ID: {ticket_id}) has been assigned to a technician.",
-                    notification_type="user_status"
+                    notification_type="user_status",
+                    link_url=link_url
                 )
 
             # Update technician metrics
@@ -310,12 +312,14 @@ def assign_ticket_to_technician_by_admin(ticket_id, technician_id, assign_type):
                 cursor.execute(update_metrics_query, (technician_id,))
 
             # Send notification to the technician
+            link_url = "/technician/assigned-tickets"
             send_notification(
-                sender_id=1,  # Assuming 1 is the admin/system user
-                receiver_id=technician_id,
+                sender_id=1,
+                receiver_id=user_id,
                 sender_name="Admin",
-                message=f"You have been assigned ticket (ID: {ticket_id}).",
-                notification_type="technician_status"
+                message=f"Your ticket (ID: {ticket_id}) has been assigned to a technician.",
+                notification_type="user_status",
+                link_url=link_url
             )
 
             # Commit the transaction if all queries were successful

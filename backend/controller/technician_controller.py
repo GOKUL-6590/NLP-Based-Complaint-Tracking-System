@@ -50,12 +50,15 @@ def update_ticket_status(ticket_id, status,technician_id,user_id):
         if result:
             notification_message = f"Your ticket #{ticket_id} is now in progress. Our technician is working on it.If technician is not in Location please dispute the process"
 
+            link_url = f"/ticket/{ticket_id}"
+
             send_notification(
-                sender_id=technician_id,  # Assuming 1 is the admin/system user
+                sender_id=technician_id,
                 receiver_id=user_id,
                 sender_name="Admin",
                 message=notification_message,
-                notification_type="technician_status"
+                notification_type="technician_status",
+                link_url=link_url  # Add this parameter
             )
             return jsonify({
                 "success": True,
@@ -116,12 +119,15 @@ def process_spares_request(ticket_id, technician_id, items):
         if result:
             notification_message = f"Spares request for Ticket #{ticket_id}."
             
+            link_url = "/admin/inventory"
+
             send_notification(
                 sender_id=technician_id,
                 receiver_id=1,  # Assuming 1 is the admin/system user
                 sender_name="Technician",
                 message=notification_message,
-                notification_type="spares_request"
+                notification_type="spares_request",
+                link_url=link_url  # Add this parameter
             )
 
             return jsonify({
@@ -166,12 +172,15 @@ def close_ticket(ticket_id, status, closure_log, technician_id,user_id):
         if result:
             notification_message = f"Your ticket #{ticket_id} has been closed by our technician.Please close the ticket and give Feedback"
 
+            link_url = "/ticket-history"
+
             send_notification(
                 sender_id=technician_id,  # Technician as sender
                 receiver_id=user_id,  
                 sender_name="Technician",
                 message=notification_message,
-                notification_type="ticket_closed"
+                notification_type="ticket_closed",
+                link_url=link_url  # Add this parameter
             )
             return jsonify({
                 "success": True,
@@ -189,3 +198,6 @@ def close_ticket(ticket_id, status, closure_log, technician_id,user_id):
             "message": "Error closing ticket",
             "error": str(e)
         }), 500
+    
+
+

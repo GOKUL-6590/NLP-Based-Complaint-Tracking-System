@@ -14,10 +14,12 @@ def process_technician_approval_rejection(technician_id, action):
         success = approve_or_reject_technician(technician_id, action)
         
         if success:
-            
             # Prepare the notification message
             action_message = "approved" if action == "approve" else "rejected"
             notification_message = f"Your account has been {action_message} by the administrator."
+
+            # Set link_url based on action
+            link_url = "/technician/dashboard" if action == "approve" else "/home"
 
             # Call the notification function
             send_notification(
@@ -25,7 +27,8 @@ def process_technician_approval_rejection(technician_id, action):
                 receiver_id=technician_id,
                 sender_name="Admin",
                 message=notification_message,
-                notification_type="technician_status"
+                notification_type="technician_status",
+                link_url=link_url  # Add this parameter
             )
             return jsonify({
                 "message": f"Technician {action}d successfully.",
@@ -44,7 +47,6 @@ def process_technician_approval_rejection(technician_id, action):
             "success": False,
             "error": str(e)
         }), 500
-
 
 
 
@@ -313,28 +315,26 @@ def get_spare_requests():
             "error": str(e)
         }), 500
 
-
-def update_spare_request_status_controller(request_id, status, user_id, ticket_id,technician_id):
+def update_spare_request_status_controller(request_id, status, user_id, ticket_id, technician_id):
     try:
         # Update the request status in the database
         result = update_spare_request_status_model(request_id, status, user_id, ticket_id)
 
         if result:
-            # Fetch technician details
+            # Construct the notification message
+            notification_message = f"Your spare request (Ticket ID: {ticket_id}) has been {status}."
 
-        
-                # Construct the notification message
-            notification_message = (
-                    f"Your spare request (Ticket ID: {ticket_id}) has been {status}."
-                )
-                # Send notification to the technician
+            # Set link_url to the specific ticket details page
+            link_url = f"/ticket/{ticket_id}"
+            # Send notification to the technician
             send_notification(
-                    sender_id=user_id,
-                    receiver_id=technician_id,  # Assuming 1 is the admin/system user
-                    sender_name="Admin",
-                    message=notification_message,
-                    notification_type="spares_request"
-                )
+                sender_id=user_id,
+                receiver_id=technician_id,
+                sender_name="Admin",
+                message=notification_message,
+                notification_type="spares_request",
+                link_url=link_url  # Add this parameter
+            )
 
             return jsonify({
                 "success": True,
@@ -355,5 +355,3 @@ def update_spare_request_status_controller(request_id, status, user_id, ticket_i
             "message": "Error updating request status",
             "error": str(e)
         }), 500
-
-

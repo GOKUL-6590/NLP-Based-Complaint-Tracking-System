@@ -42,12 +42,14 @@ def register_user(data):
     if role == 'technician' and not isApproved:
         admins = get_all_admins()
         for admin in admins:
+            link_url = "/admin/users"  # Direct to technician's profile for approval
             send_notification(
                 sender_id=user['id'], 
                 receiver_id=admin['id'], 
                 sender_name='System', 
                 message=f"New technician '{data['name']}' requires approval.", 
-                notification_type='Technician Approval'
+                notification_type='Technician Approval',
+                link_url=link_url  # Add this parameter
             )
 
     message = 'User registered successfully.'
@@ -55,7 +57,6 @@ def register_user(data):
         message += ' Pending admin approval.'
 
     return jsonify({'message': message, 'success': True}), 201
-
 def login_user(data):
     required_fields = ['email', 'password']
     if any(field not in data or not data[field] for field in required_fields):
