@@ -152,6 +152,11 @@
 
 }
 
+.inventory-grid h2,
+.right-column h2 {
+    font-size: 20px;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .inventory-container {

@@ -17,27 +17,30 @@ const Inventory = () => {
   const [requests, setRequests] = useState([]);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // For load transition
 
   useEffect(() => {
     const loadInventoryAndRequests = async () => {
       try {
-        dispatch(showLoading())
+        dispatch(showLoading());
         const [inventoryData, requestData] = await Promise.all([
           fetchInventoryItems(),
           fetchSpareRequests(),
         ]);
-        dispatch(hideLoading())
+        dispatch(hideLoading());
 
         setItems(inventoryData.inventory_items);
         setRequests(requestData.spare_requests); // Assuming API returns { spare_requests: [...] }
+        setTimeout(() => setIsInitialLoad(false), 1000); // End animation after 1s
       } catch (error) {
-        dispatch(hideLoading())
+        dispatch(hideLoading());
         console.error("Error loading data:", error);
+        setTimeout(() => setIsInitialLoad(false), 1000); // Ensure animation ends even on error
       }
     };
 
     loadInventoryAndRequests();
-  }, []);
+  }, [dispatch]);
 
   const [newItem, setNewItem] = useState({
     item_name: "",
@@ -56,18 +59,18 @@ const Inventory = () => {
     if (!newItem.item_name.trim() || newItem.quantity <= 0) return;
 
     const newItemObj = {
-      item_name: newItem.item_name, // Match table key
+      item_name: newItem.item_name,
       description: newItem.description,
       quantity: parseInt(newItem.quantity, 10),
       added_by: user.id,
-      added_by_name: user.name || "Admin", // Add this to match table expectation
-      id: Date.now(), // Temporary ID until API provides one
+      added_by_name: user.name || "Admin",
+      id: Date.now(),
     };
 
     try {
       dispatch(showLoading());
       const response = await addItemToInventory({
-        name: newItem.item_name, // API might expect 'name'
+        name: newItem.item_name,
         description: newItem.description,
         quantity: parseInt(newItem.quantity, 10),
         added_by: user.id,
@@ -76,14 +79,13 @@ const Inventory = () => {
 
       if (response.success) {
         toast.success(response.message);
-        // Use the response data if it includes the full item details
-        const addedItem = response.data?.item || newItemObj; // Fallback to newItemObj if API doesn't return item
+        const addedItem = response.data?.item || newItemObj;
         setItems((prevItems) => [...prevItems, {
           ...addedItem,
-          item_name: addedItem.name || addedItem.item_name, // Normalize key if API uses 'name'
-          added_by_name: user.name || "Admin", // Ensure this is set
+          item_name: addedItem.name || addedItem.item_name,
+          added_by_name: user.name || "Admin",
         }]);
-        setNewItem({ item_name: "", description: "", quantity: "", added_by: "" }); // Reset form
+        setNewItem({ item_name: "", description: "", quantity: "", added_by: "" });
       } else {
         toast.error(response.message);
       }
@@ -102,7 +104,6 @@ const Inventory = () => {
       if (response.success) {
         toast.success(`Request ${status} successfully`);
         socket.emit("unread-notifications", technician_id);
-        // window.location.reload(); // Avoid full reload, update state instead
         setRequests((prevRequests) =>
           prevRequests.map((req) =>
             requestIdsArray.includes(req.request_id) ? { ...req, approval_status: status } : req
@@ -145,12 +146,12 @@ const Inventory = () => {
   };
 
   return (
-    <div className="inventory-container">
+    <div className={`inventory-container ${isInitialLoad ? "animate-on-load" : ""}`}>
       <h2>Inventory Management</h2>
 
       <div className="inventory-grid">
         <div className="inventory-list">
-          <h3>Available Items</h3>
+          <h2>Available Items</h2>
           {items.length > 0 ? (
             <table className="inventory-table">
               <thead>
@@ -173,13 +174,13 @@ const Inventory = () => {
               </tbody>
             </table>
           ) : (
-            <p>Not Available</p>
+            <p className="no-data"> Not Available</p>
           )}
         </div>
 
         <div className="right-column">
           <div className="technician-requests">
-            <h3>Technician Requests</h3>
+            <h2>Technician Requests</h2>
             {requests.length > 0 ? (
               <table className="inventory-table">
                 <thead>
@@ -247,12 +248,14 @@ const Inventory = () => {
                 </tbody>
               </table>
             ) : (
-              <p>Not Available</p>
+              <div className="no-requests">
+                <p className="no-data"> No Requests</p>
+              </div>
             )}
           </div>
 
           <div className="inventory-form">
-            <h3>Add New Item</h3>
+            <h2>Add New Item</h2>
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
