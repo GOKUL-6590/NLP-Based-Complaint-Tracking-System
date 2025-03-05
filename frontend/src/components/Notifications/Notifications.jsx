@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // Add for navigation
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "./Notifications.css";
 import socket from "../socket";
+import { hideLoading, showLoading } from "../../redux/alertSlice";
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // Ensure this is defined
 
     const user = useSelector((state) => state.user);
-    const navigate = useNavigate(); // Hook for navigation
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (!user || !user.id) {
@@ -23,36 +25,37 @@ const Notifications = () => {
 
         const fetchNotifications = async () => {
             try {
+                dispatch(showLoading());
                 const response = await axios.get("http://localhost:5000/users/notifications", {
                     params: { receiver_id: user.id },
                 });
-                setNotifications(response.data.notifications || []); // Ensure array if undefined
+                setNotifications(response.data.notifications || []);
             } catch (error) {
                 console.error("Error fetching notifications:", error);
                 setNotifications([]);
             } finally {
+                dispatch(hideLoading());
                 setLoading(false);
             }
         };
 
         fetchNotifications();
 
-        // Optional: Listen for real-time updates via socket (if implemented in backend)
         socket.on("notification", (newNotification) => {
             setNotifications((prev) => [newNotification, ...prev]);
         });
 
-        // Cleanup socket listener
         return () => {
             socket.off("notification");
         };
-    }, [user]);
+    }, [user, dispatch]);
 
     const markAsRead = async (notificationId) => {
         try {
+            dispatch(showLoading());
             await axios.post(`http://localhost:5000/users/notifications/read/${notificationId}?userId=${user.id}`);
+            dispatch(hideLoading());
             socket.emit("unread-notifications", user.id);
-
             setNotifications((prev) =>
                 prev.map((notif) =>
                     notif.id === notificationId ? { ...notif, is_read: true } : notif
@@ -65,15 +68,15 @@ const Notifications = () => {
 
     const markAllAsRead = async () => {
         try {
+            dispatch(showLoading());
             await axios.post(
                 "http://localhost:5000/users/notifications/read-all",
                 { receiver_id: user.id },
                 { headers: { "Content-Type": "application/json" } }
             );
+            dispatch(hideLoading());
             socket.emit("unread-notifications", user.id);
-            setNotifications((prev) =>
-                prev.map((notif) => ({ ...notif, is_read: true }))
-            );
+            setNotifications((prev) => prev.map((notif) => ({ ...notif, is_read: true })));
         } catch (error) {
             console.error("Error marking all notifications as read:", error);
         }
@@ -81,9 +84,11 @@ const Notifications = () => {
 
     const deleteAllNotifications = async () => {
         try {
+            dispatch(showLoading());
             await axios.delete("http://localhost:5000/users/notifications/delete-all", {
                 data: { receiver_id: user.id },
             });
+            dispatch(hideLoading());
             socket.emit("unread-notifications", user.id);
             setNotifications([]);
         } catch (error) {
@@ -92,10 +97,11 @@ const Notifications = () => {
     };
 
     const handleNotificationClick = (notification) => {
+        console.log("Notification clicked:", notification.id, "is_read:", notification.is_read, "link_url:", notification.link_url);
         if (notification.link_url) {
-            navigate(notification.link_url); // Navigate to link_url
+            navigate(notification.link_url);
             if (!notification.is_read) {
-                markAsRead(notification.id); // Mark as read if unread
+                markAsRead(notification.id);
             }
         }
     };
@@ -126,8 +132,8 @@ const Notifications = () => {
                         <li
                             key={notification.id}
                             className={`notification-item ${notification.is_read ? "read" : "unread"}`}
-                            onClick={() => handleNotificationClick(notification)} // Click handler
-                            style={{ cursor: notification.link_url ? "pointer" : "default" }} // Indicate clickable
+                            onClick={() => handleNotificationClick(notification)}
+                            style={{ cursor: notification.link_url ? "pointer" : "default" }}
                         >
                             <div className="notification-content">
                                 <strong>{notification.sender_name}:</strong> {notification.message}
@@ -138,7 +144,7 @@ const Notifications = () => {
                                     <button
                                         className="mark-as-read"
                                         onClick={(e) => {
-                                            e.stopPropagation(); // Prevent triggering li click
+                                            e.stopPropagation();
                                             markAsRead(notification.id);
                                         }}
                                     >

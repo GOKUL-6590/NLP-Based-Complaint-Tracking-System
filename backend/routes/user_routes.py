@@ -29,7 +29,6 @@ def get_user_notifications():
             'error': str(e)
         }), 500
 
-# Route to mark a notification as read
 @user_bp.route("/notifications/read/<int:notification_id>", methods=["POST"])
 def mark_user_notification(notification_id):
     try:
