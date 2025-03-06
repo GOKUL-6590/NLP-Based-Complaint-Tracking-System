@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify
 from mysql.connector import connect
 
 from backend.Sockets.socket import emit_ticket_assigned
-from backend.models.admin import add_item_to_inventory_model, assign_ticket_to_technician_by_admin, fetch_dashboard_metrics, get_all_inventory_items_from_db, get_all_spare_requests_from_db, get_all_technician_metrics_from_db, get_all_tickets, get_all_users_from_db, get_assigned_tickets_from_db, get_available_technicians_from_db, get_unassigned_tickets_from_db, update_spare_request_status_model
+from backend.models.admin import add_item_to_inventory_model, assign_ticket_to_technician_by_admin, fetch_dashboard_metrics, get_all_inventory_items_from_db, get_all_spare_requests_from_db, get_all_technician_metrics_from_db, get_all_tickets, get_all_users_from_db, get_assigned_tickets_from_db, get_available_technicians_from_db, get_unassigned_tickets_from_db, update_spare_request_status_model, update_ticket_priority_in_db
+from backend.routes.user_routes import get_ticket_details
 
 from ..models.notifications import approve_or_reject_technician, send_notification
 from ..models.technician import fetch_approved_technicians_from_db, fetch_unapproved_technicians_from_db, update_technician_approval_status
@@ -355,3 +356,59 @@ def update_spare_request_status_controller(request_id, status, user_id, ticket_i
             "message": "Error updating request status",
             "error": str(e)
         }), 500
+
+def process_ticket_priority_update(ticket_id, priority, user_id,technician_id):
+    try:
+        # Call the model to update the ticket priority in the database
+        success = update_ticket_priority_in_db(ticket_id, priority, user_id)
+
+        if success:
+            # Prepare the notification message
+            notification_message = f"The priority of ticket {ticket_id} has been changed to {priority} by the administrator."
+
+           
+           
+
+            # Set link_url for the notification
+            link_url = f"/ticket/{ticket_id}"
+
+            # Send notification to the ticket's user
+            send_notification(
+                sender_id=1,  # Admin who made the change
+                receiver_id=user_id,
+                sender_name="Admin",
+                message=notification_message,
+                notification_type="priority_update",
+                link_url=link_url
+            )
+
+            # Optionally notify the technician if assigned
+            if technician_id:
+                send_notification(
+                    sender_id=1,
+                    receiver_id=technician_id,
+                    sender_name="Admin",
+                    message=notification_message,
+                    notification_type="priority_update",
+                    link_url=link_url
+                )
+
+            return jsonify({
+                "message": f"Ticket priority updated to {priority} successfully.",
+                "success": True
+            }), 200
+        else:
+            return jsonify({
+                "message": "Failed to update ticket priority.",
+                "success": False
+            }), 500
+
+    except Exception as e:
+        print(f"Error processing ticket priority update: {str(e)}")
+        return jsonify({
+            "message": "An unexpected error occurred. Please try again later.",
+            "success": False,
+            "error": str(e)
+        }), 500
+    
+    

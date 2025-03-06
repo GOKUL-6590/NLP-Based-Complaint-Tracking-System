@@ -556,4 +556,25 @@ def update_spare_request_status_model(request_id, status, user_id, ticket_id):
         print(f"Database error: {e}")
         return None
 
+def update_ticket_priority_in_db(ticket_id, priority, admin_id):
+    try:
+        conn = get_db_connection()  # Replace with your DB connection function
+        cursor = conn.cursor()
+
+        # Update the tickets table
+        update_query = """
+            UPDATE tickets 
+            SET priority = %s, last_updated = NOW() 
+            WHERE ticket_id = %s
+        """
+        cursor.execute(update_query, (priority, ticket_id))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return True
+    except Exception as e:
+        print(f"Error updating ticket priority in DB: {str(e)}")
+        return False
 

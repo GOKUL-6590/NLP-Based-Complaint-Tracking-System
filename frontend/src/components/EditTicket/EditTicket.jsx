@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { CheckCircle, Hourglass, UserCheck, ClipboardList } from "lucide-react";
 import "./EditTicket.css";
 import { FaTimesCircle } from "react-icons/fa";
-import { closeTicket, getRequestedSpares, updateTicketStatus } from "../../service/TechnicianService"; // Added closeTicket
+import { closeTicket, getRequestedSpares, updateTicketStatus } from "../../service/TechnicianService"; // Added updateTicketPriority
 import socket from "../socket";
 import { useSelector } from "react-redux";
 import RequestSparesModal from "../RequestSpares/RequestSpares";
 import toast from "react-hot-toast";
+import { updateTicketPriority } from "../../service/adminService";
 
 const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequestSpares, onDispute }) => {
     if (!ticket) return null;
@@ -15,12 +16,13 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
     const [openSpares, setOpenSpares] = useState();
     const [spares, setSpares] = useState([]);
     const [status, setStatus] = useState(ticket.status);
+    const [priority, setPriority] = useState(ticket.priority); // New state for priority
     const [timer, setTimer] = useState(null);
     const [timeLeft, setTimeLeft] = useState(0);
     const [isDisputed, setIsDisputed] = useState(false);
     const { user } = useSelector((state) => state.user);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [isClosureModalOpen, setIsClosureModalOpen] = useState(false); // New state for closure modal
+    const [isClosureModalOpen, setIsClosureModalOpen] = useState(false);
 
     const getStatusProgress = (status) => {
         switch (status.toLowerCase().replace(/\s+/g, "")) {
@@ -53,12 +55,10 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
         }
     };
 
-    // Open closure modal instead of setting closureLog directly
     const handleCloseTicketClick = () => {
         setIsClosureModalOpen(true);
     };
 
-    // Handle closure submission from modal
     const handleCloseTicketSubmit = async () => {
         if (closureLog.trim() === "") {
             toast.error("Please provide a closure log.");
@@ -68,16 +68,32 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
             const response = await closeTicket(ticket.ticket_id, "Closed", closureLog, user.id, ticket.id);
             if (response.success) {
                 setStatus("Closed");
-                // socket.emit("ticket-closed", ticket.user_id);
                 onCloseTicket(ticket.ticket_id, closureLog);
                 setIsClosureModalOpen(false);
-                setClosureLog(""); // Clear after submission
-                toast.success(response.message)
+                setClosureLog("");
+                toast.success(response.message);
             } else {
                 toast.error(response.message);
             }
         } catch (error) {
             console.error("Error closing ticket:", error);
+        }
+    };
+
+    // New function to handle priority update
+    const handlePriorityUpdate = async () => {
+        try {
+            const response = await updateTicketPriority(ticket.ticket_id, priority, ticket.user_id, ticket.technician_id);
+            if (response.success) {
+                toast.success("Priority updated successfully");
+                // Optionally notify the user or technician via socket
+                socket.emit("unread-notifications", ticket.user_id);
+            } else {
+                toast.error(response.message);
+            }
+        } catch (error) {
+            console.error("Error updating priority:", error);
+            toast.error("Failed to update priority");
         }
     };
 
@@ -120,8 +136,27 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                             </div>
                             <div className="modal-section">
                                 <h4>Assigned To</h4>
-                                <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
-                                <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
+                                <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
+                                <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
+                            </div>
+                            {/* New Admin Priority Section */}
+                            <div className="modal-section">
+                                <h4>Change Priority</h4>
+                                <select
+                                    value={priority}
+                                    onChange={(e) => setPriority(e.target.value)}
+                                    className="priority-select"
+                                >
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                                <button
+                                    onClick={handlePriorityUpdate}
+                                    className="action-button priority-update-button"
+                                >
+                                    Update Priority
+                                </button>
                             </div>
                         </>
                     ) : isTechnician ? (
@@ -133,8 +168,8 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                     ) : (
                         <div className="modal-section">
                             <h4>Assigned To</h4>
-                            <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
-                            <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
+                            <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
+                            <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
                         </div>
                     )}
                     <div className="modal-section">

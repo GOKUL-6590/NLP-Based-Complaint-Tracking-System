@@ -7,8 +7,16 @@
     background: #f8f9fa;
 }
 
-/* Header */
+/* Fade-in animation on load */
+.inventory-container.animate-on-load {
+    animation: fadeIn 0.7s ease-out forwards;
+    opacity: 0;
+}
 
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
 
 /* Grid Layout */
 .inventory-grid {
@@ -143,13 +151,10 @@
 
 .accept-btn,
 .reject-btn {
-
     min-width: 40px;
-
     height: 30px;
     margin-top: 5px;
     margin-left: 8px;
-
 }
 
 .inventory-grid h2,
@@ -161,11 +166,9 @@
 @media (max-width: 768px) {
     .inventory-container {
         height: auto;
-        /* Allow natural height */
         padding: 15px;
         margin: 10px auto;
         overflow-y: auto;
-        /* Enable scrolling */
     }
 
     .inventory-container h2 {
@@ -175,7 +178,6 @@
 
     .inventory-grid {
         grid-template-columns: 1fr;
-        /* Stack columns vertically */
         gap: 15px;
     }
 
@@ -185,23 +187,18 @@
 
     .right-column {
         height: auto;
-        /* Remove fixed height */
         gap: 15px;
     }
 
     .technician-requests {
         height: auto;
-        /* Allow natural height */
         min-height: 200px;
-        /* Ensure visibility */
         padding: 12px;
     }
 
     .inventory-form {
         height: auto;
-        /* Allow natural height */
         min-height: 250px;
-        /* Ensure form is usable */
         padding: 12px;
     }
 
@@ -283,9 +280,7 @@
         font-size: 0.85rem;
     }
 
-    /* Hide less critical columns on small screens */
     .inventory-table th:nth-child(4),
-    /* Requested At */
     .inventory-table td:nth-child(4) {
         display: none;
     }

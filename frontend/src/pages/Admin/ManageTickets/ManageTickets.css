@@ -115,16 +115,7 @@
     transition: background-color 0.2s ease;
 }
 
-.ticket-table th {
-    /* Gradient header */
-    font-weight: 700;
-    text-transform: uppercase;
-    /* Bold and uppercase for emphasis */
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    border-bottom: 2px solid #6c5ce7;
-    /* Purple underline */
-}
+
 
 .ticket-table tr {
     background-color: #fff;

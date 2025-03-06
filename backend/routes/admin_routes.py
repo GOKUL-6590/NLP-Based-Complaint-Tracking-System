@@ -16,6 +16,7 @@ from ..controller.admin_controller import (
     get_unassigned_tickets,
     process_technician_approval_rejection,
     get_unapproved_technicians,
+    process_ticket_priority_update,
     update_spare_request_status_controller
 )
 
@@ -166,3 +167,25 @@ def update_spare_request_status():
     except Exception as e:
         return handle_exception(e, "Error updating spare request status")
 
+@admin_bp.route("/technician/tickets/<string:ticket_id>/priority", methods=["PUT"])
+def update_ticket_priority(ticket_id):
+    try:
+        data = json.loads(request.data.decode('utf-8'))
+        priority = data.get('priority')
+        user_id = data.get('user_id')  # Assuming admin ID is sent as 'updated_by'
+        technician_id=data.get('technician_id')
+
+        if not ticket_id:
+            return jsonify({"message": "Ticket ID is required.", "success": False}), 400
+        if not priority:
+            return jsonify({"message": "Priority is required.", "success": False}), 400
+        if not user_id:
+            return jsonify({"message": "User ID is required.", "success": False}), 400
+        if priority not in ['Low', 'Medium', 'High']:
+            return jsonify({"message": "Invalid priority. Must be 'Low', 'Medium', or 'High'.", "success": False}), 400
+
+        return process_ticket_priority_update(ticket_id, priority, user_id,technician_id)
+    except Exception as e:
+        return handle_exception(e, "Error updating ticket priority")
+    
+    

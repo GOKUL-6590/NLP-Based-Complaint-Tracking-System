@@ -181,3 +181,26 @@ export const updateSpareRequestStatus = async (ticketId, requestId, status, user
         throw error;
     }
 };
+
+export const updateTicketPriority = async (ticketId, priority, user_id, technician_id) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await axios.put(
+            `${API_URL}/technician/tickets/${ticketId}/priority`,
+            {
+                priority,
+                user_id,
+                technician_id
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error updating ticket priority:", error);
+        return { success: false, message: error.response?.data?.message || "Server error" };
+    }
+};
