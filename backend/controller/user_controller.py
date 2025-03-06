@@ -6,7 +6,7 @@ import json
 
 from backend.NLP.classifier import classify_complaint
 from backend.models.technician import assign_unassigned_tickets
-from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_tickets_by_userid, get_tickets_stats
+from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_tickets_by_userid, get_tickets_stats, store_push_subscription
 from ..models.notifications import  delete_notifications_by_receiver, get_notifications_by_receiver, get_unread_notifications_count_by_userid, mark_all_notification_as_read, mark_notification_as_read, save_fcm_token_to_db
 from flask import jsonify
 from datetime import datetime, timedelta
@@ -376,3 +376,27 @@ def get_ticket_details_by_id(ticket_id):
             "error": str(e)
         }), 500
     
+def process_notification_subscription(user_id, subscription):
+    try:
+        # Call the model to store the subscription
+        success = store_push_subscription(user_id, subscription)
+        
+        if success:
+            return jsonify({
+                "message": "Subscribed successfully",
+                "success": True
+            }), 200
+        else:
+            return jsonify({
+                "message": "Failed to store push subscription.",
+                "success": False
+            }), 500
+
+    except Exception as e:
+        print(f"Error processing notification subscription: {str(e)}")
+        return jsonify({
+            "message": "An unexpected error occurred. Please try again later.",
+            "success": False,
+            "error": str(e)
+        }), 500
+

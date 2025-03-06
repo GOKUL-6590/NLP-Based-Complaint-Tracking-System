@@ -1,3 +1,6 @@
+import json
+import os
+from urllib.parse import urlparse
 import mysql.connector
 from flask import current_app
 from ..utils.db_utils import get_db_connection
@@ -9,14 +12,14 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 from datetime import datetime
 from firebase_admin import messaging
-from backend.utils.db_utils import get_db_connection  
-# Firebase Cloud Messaging (FCM) configuration
-# FCM_SERVER_KEY = "BJHJXiz83xlAzyzk9jRhOaOd9fbuL6oyE96Y_wExtE1ZyMjlpUyDr0Hb0AbKYEYJHG-xHEdSv7EcB3szhZ40Uoo"
-# FCM_URL = "https://fcm.googleapis.com/fcm/send"
+from backend.utils.db_utils import get_db_connection 
+from pywebpush import webpush, WebPushException
 
 
-# cred = credentials.Certificate("C:/Users/haris/Desktop/s8-project/backend/firebase-service-account.json")
-# firebase_admin.initialize_app(cred)
+VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY")
+VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY")
+VAPID_EMAIL = os.environ.get("VAPID_EMAIL")
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:5173")
 
 def get_notifications_by_receiver(receiver_id):
     try:
@@ -71,59 +74,68 @@ def create_notification(sender_id, receiver_id, sender_name, message, notificati
         print(f"Error creating notification: {e}")
         conn.rollback()
         return False
+    
 
-
-
-
+if not all([VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY, VAPID_EMAIL]):
+    raise ValueError("Missing VAPID keys or email in environment variables")
 
 def send_notification(sender_id, receiver_id, sender_name, message, notification_type, link_url=None):
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # Insert notification into the database with link_url
-        query = """
-            INSERT INTO notifications (sender_id, receiver_id, sender_name, message, type, link_url, timestamp, is_read)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (sender_id, receiver_id, sender_name, message, notification_type, link_url, datetime.now(), 0))
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            "INSERT INTO notifications (sender_id, receiver_id, sender_name, message, type, link_url, timestamp, is_read) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (sender_id, receiver_id, sender_name, message, notification_type, link_url, datetime.now(), 0)
+        )
         conn.commit()
 
-        # Retrieve the recipient's FCM token
-        cursor.execute("SELECT fcm_token FROM fcm_tokens WHERE user_id = %s", (receiver_id,))
-        token_row = cursor.fetchone()
+        cursor.execute("SELECT subscription FROM push_subscriptions WHERE user_id = %s", (receiver_id,))
+        subscription_row = cursor.fetchone()
 
-        if token_row:
-            fcm_token = token_row[0]
+        if subscription_row:
+            subscription_data = json.loads(subscription_row['subscription'])
+            print(f"Subscription data: {subscription_data}")
+            endpoint = subscription_data.get('endpoint', '')
+           
 
-            # Construct the notification payload
-            message_payload = messaging.Message(
-                token=fcm_token,
-                notification=messaging.Notification(
-                    title=f"Message from {sender_name}",
-                    body=message,
-                ),
-                data={
-                    "type": notification_type,
-                    "sender_id": str(sender_id),
-                    "link_url": link_url if link_url else ""  # Include link_url in FCM data payload
-                }
-            )
+            endpoint_origin = urlparse(endpoint).scheme + '://' + urlparse(endpoint).hostname
+            vapid_claims = {
+                "sub": f"mailto:{VAPID_EMAIL}",
+                "aud": endpoint_origin,
+            }
+            print(f"VAPID claims: {vapid_claims}")  # Debug VAPID claims
 
-            # Send the notification via Firebase
-            response = messaging.send(message_payload)
-            print(f"Notification sent successfully: {response}")
+            full_link_url = f"{BASE_URL}{link_url}" if link_url else ""
+            payload = json.dumps({
+                "title": f"Message from {sender_name}",
+                "message": message,
+                "link_url": full_link_url
+            })
+            if len(payload.encode('utf-8')) > 3072:
+                print(f"Payload too large: {len(payload.encode('utf-8'))} bytes")
+                message = message[:100] + "..."
+                payload = json.dumps({"title": f"Message from {sender_name}", "message": message, "link_url": full_link_url})
 
+            print(f"Sending payload: {payload}")  # Debug payload
+            try:
+                response = webpush(
+                    subscription_info=subscription_data,
+                    data=payload,
+                    vapid_private_key=VAPID_PRIVATE_KEY,
+                    vapid_claims=vapid_claims
+                )
+                print(f"Web Push notification sent to user {receiver_id}")
+            except WebPushException as e:
+                print(f"Error sending Web Push notification: {str(e)} - Full response: {e.response.text}")
         else:
-            print(f"No FCM token found for user ID {receiver_id}.")
-
+            print(f"No push subscription found for user ID {receiver_id}")
     except Exception as e:
         print(f"Error sending notification: {e}")
     finally:
         cursor.close()
         conn.close()
 
-        
 def approve_or_reject_technician(technician_id, action):
     """
     Approve or reject a technician based on the action ('approve' or 'reject').

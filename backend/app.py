@@ -1,12 +1,15 @@
 import sys
 import os
 
+from dotenv import load_dotenv
+
 # Add the parent directory to the sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from backend import create_app
 # Create the Flask app instance
 from Sockets.socket import socketio  # Ensure you import socketio
+load_dotenv()
 app = create_app()
 
 # Run the Flask server

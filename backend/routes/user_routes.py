@@ -13,8 +13,11 @@ from ..controller.user_controller import (
     mark_all_as_read,
     mark_as_read,
     new_ticket_creator,
+    process_notification_subscription,
     save_fcm_token_controller,
 )
+
+
 
 user_bp = Blueprint("user", __name__)
 
@@ -229,3 +232,17 @@ def get_ticket_details(ticket_id):
             "error": str(e)
         }), 500
 
+@user_bp.route("/notifications/subscribe", methods=["POST"])
+def subscribe_to_notifications():
+    try:
+        data = json.loads(request.data.decode('utf-8'))
+        user_id = data.get('user_id')
+        subscription = data.get('subscription')
+
+        if not user_id or not subscription:
+            return jsonify({"message": "User ID and subscription are required.", "success": False}), 400
+
+        return process_notification_subscription(user_id, subscription)
+    except Exception as e:
+        print(f"Error subscribing to notifications: {str(e)}")
+        return jsonify({"message": "Error subscribing", "success": False, "error": str(e)}), 500

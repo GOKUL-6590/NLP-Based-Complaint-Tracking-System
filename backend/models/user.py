@@ -1,3 +1,4 @@
+import json
 import cloudinary
 import mysql.connector
 from werkzeug.security import generate_password_hash
@@ -657,3 +658,24 @@ def get_ticket_by_id(ticket_id):
     except Exception as e:
         print(f"Error retrieving ticket details: {str(e)}")
         return None
+
+def store_push_subscription(user_id, subscription):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO push_subscriptions (user_id, subscription)
+            VALUES (%s, %s)
+            ON DUPLICATE KEY UPDATE subscription = %s
+            """,
+            (user_id, json.dumps(subscription), json.dumps(subscription))
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error storing push subscription: {str(e)}")
+        return False
+
