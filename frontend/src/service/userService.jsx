@@ -62,16 +62,26 @@ export const getTicketDetails = async (ticketId, token) => {
     }
 };
 
-export const submitTicketFeedback = async (ticketId, feedback, userId, token) => {
+export const submitTicketFeedback = async (ticketId, feedback, rating, technicianId, userId, token) => {
     try {
         const response = await axios.post(
             `${API_URL}/tickets/${ticketId}/feedback`,
-            { feedback, userId },
-            { headers: { Authorization: `Bearer ${token}` } }
+            {
+                feedback,
+                rating,
+                technician_id: technicianId,
+                user_id: userId
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
         );
         return response.data;
     } catch (error) {
-        throw new Error("Failed to submit feedback");
+        throw new Error(error.response?.data?.message || "Failed to submit feedback");
     }
 };
 

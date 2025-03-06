@@ -15,6 +15,7 @@ from ..controller.user_controller import (
     new_ticket_creator,
     process_notification_subscription,
     save_fcm_token_controller,
+    submit_feedback,
 )
 
 
@@ -246,3 +247,18 @@ def subscribe_to_notifications():
     except Exception as e:
         print(f"Error subscribing to notifications: {str(e)}")
         return jsonify({"message": "Error subscribing", "success": False, "error": str(e)}), 500
+
+
+@user_bp.route('/tickets/<ticket_id>/feedback', methods=['POST'])
+def submit_feedback_route(ticket_id):
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "message": "No JSON data provided"}), 400
+        
+        # Pass the entire request data to the controller
+        response = submit_feedback(ticket_id, data)
+        return jsonify(response), 200 if response['success'] else 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+

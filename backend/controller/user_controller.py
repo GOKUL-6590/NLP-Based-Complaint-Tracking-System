@@ -6,7 +6,7 @@ import json
 
 from backend.NLP.classifier import classify_complaint
 from backend.models.technician import assign_unassigned_tickets
-from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_tickets_by_userid, get_tickets_stats, store_push_subscription
+from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_tickets_by_userid, get_tickets_stats, store_push_subscription, submit_ticket_feedback
 from ..models.notifications import  delete_notifications_by_receiver, get_notifications_by_receiver, get_unread_notifications_count_by_userid, mark_all_notification_as_read, mark_notification_as_read, save_fcm_token_to_db
 from flask import jsonify
 from datetime import datetime, timedelta
@@ -399,4 +399,27 @@ def process_notification_subscription(user_id, subscription):
             "success": False,
             "error": str(e)
         }), 500
+
+def submit_feedback(ticket_id, data):
+    try:
+        feedback = data.get('feedback')
+        rating = data.get('rating')
+        user_id = data.get('user_id')
+        technician_id = data.get('technician_id')  # Optional from frontend
+
+        # Validation
+        if not feedback or not user_id:
+            return {"success": False, "message": "Feedback and user ID are required"}
+        if rating is not None and (not isinstance(rating, int) or rating < 1 or rating > 5):
+            return {"success": False, "message": "Rating must be an integer between 1 and 5"}
+
+        # If technician_id not provided, fetch from ticket
+        if not technician_id:
+            return {"success": False, "message": "Technician ID required but not found for this ticket"}
+
+        # Call model
+        submit_ticket_feedback(ticket_id, user_id, technician_id, feedback, rating)
+        return {"success": True, "message": "Feedback submitted successfully"}
+    except Exception as e:
+        return {"success": False, "message": str(e)}
 

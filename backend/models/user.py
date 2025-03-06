@@ -679,3 +679,23 @@ def store_push_subscription(user_id, subscription):
         print(f"Error storing push subscription: {str(e)}")
         return False
 
+
+def submit_ticket_feedback(ticket_id, user_id, technician_id, feedback, rating=None):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO ticket_feedback (ticket_id, user_id, technician_id, comments, rating)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (ticket_id, user_id, technician_id, feedback, rating)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+

@@ -9,7 +9,7 @@ import "./TicketPage.css";
 
 const TicketDetails = () => {
     const { ticketId } = useParams();
-    const user = useSelector((state) => state.user);
+    const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const [ticketData, setTicketData] = useState(null);
     const [feedback, setFeedback] = useState("");
@@ -23,7 +23,9 @@ const TicketDetails = () => {
                 dispatch(showLoading());
                 const token = localStorage.getItem("token");
                 const data = await getTicketDetails(ticketId, token);
+                dispatch(hideLoading())
                 setTicketData(data.ticket);
+                console.log(data)
             } catch (error) {
                 console.error(error);
                 toast.error(error.message);
@@ -42,16 +44,27 @@ const TicketDetails = () => {
             toast.error("Feedback cannot be empty");
             return;
         }
+        // Optional: Validate rating if required
+        if (rating < 1 || rating > 5) {
+            toast.error("Please select a rating between 1 and 5");
+            return;
+        }
 
         try {
             dispatch(showLoading());
             const token = localStorage.getItem("token");
-            await submitTicketFeedback(ticketId, feedback, user.id, token);
-            toast.success("Feedback submitted successfully");
-            setFeedback("");
-            setRating(0);
-            const data = await getTicketDetails(ticketId, token);
-            setTicketData(data.ticket);
+            const response = await submitTicketFeedback(ticketId, feedback, rating, user.id, ticket.technician_id, token);  // Add technician_id 
+            dispatch(hideLoading())
+            if (response.success) {
+
+                toast.success(response.message);
+                setFeedback("");
+                setRating(0);
+                const data = await getTicketDetails(ticketId, token);
+                setTicketData(data.ticket);
+            } else {
+                toast.error(response.message)
+            }
         } catch (error) {
             console.error(error);
             toast.error(error.message);
