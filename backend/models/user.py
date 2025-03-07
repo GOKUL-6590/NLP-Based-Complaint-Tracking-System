@@ -574,7 +574,7 @@ def get_ticket_by_id(ticket_id):
                 t.ticket_id, t.system_number, t.venue, t.block, t.category, 
                 t.description, t.status, t.priority, t.created_at, t.last_updated, t.is_emergency,
                 tm.id AS mapping_id, tm.user_id, tm.technician_id, tm.started_time, tm.closure_time, 
-                tm.assigned_by_admin, tm.sla_deadline,
+                tm.assigned_by_admin, tm.sla_deadline,tm.log_id,
                 u.name AS user_name,
                 tech.name AS technician_name
             FROM tickets t
