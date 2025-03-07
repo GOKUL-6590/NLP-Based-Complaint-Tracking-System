@@ -46,7 +46,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
     const handleStatusUpdate = async (newStatus) => {
         try {
             if (newStatus.toLowerCase() === "inprogress") {
-                const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.id);
+                const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.user_id);
                 if (response.success) {
                     setStatus("In Progress");
                     onStatusUpdate(ticket.ticket_id, "In Progress"); // Update parent component
@@ -82,7 +82,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
             const response = await closeTicket(ticket.ticket_id, "Closed", closureLog, user.id, ticket.id);
             if (response.success) {
                 setStatus("Closed");
-                onCloseTicket(ticket.ticket_id, closureLog); 
+                onCloseTicket(ticket.ticket_id, closureLog);
                 setIsClosureModalOpen(false);
                 setClosureLog("");
                 toast.success(response.message);
@@ -113,7 +113,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                 socket.emit("technician-work-history", ticket.technician_id);     // For WorkHistory
                 socket.emit("unread-notifications", ticket.user_id); // Notify user
                 socket.emit("ticket-assigned", ticket.ticket_id); // Update ticket lists
-                socket.emit("inprogress-update", ticket.user_id);         // For Home page
+                socket.emit("inprogress-update", ticket.id);         // For Home page
                 socket.emit("user-ticket-history", ticket.user_id);              // For TicketHistory
             } else {
                 toast.error(response.message);
@@ -126,6 +126,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
 
     // Fetch Spares and Set Up WebSocket Listeners
     useEffect(() => {
+        console.log(ticket)
         socket.emit("join", user.id)
         const fetchSpares = async () => {
             const response = await getRequestedSpares(ticket.ticket_id);

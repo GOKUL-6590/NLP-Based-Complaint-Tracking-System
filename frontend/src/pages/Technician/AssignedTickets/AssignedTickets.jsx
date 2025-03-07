@@ -46,7 +46,7 @@ function AssignedTickets() {
         getTickets();
 
         // Request initial technician-assigned tickets
-        socket.emit("technician-assigned-tickets", user.id);
+        // socket.emit("technician-assigned-tickets", user.id);
 
         // WebSocket listener
         socket.on("technician-assigned-tickets", (data) => {
