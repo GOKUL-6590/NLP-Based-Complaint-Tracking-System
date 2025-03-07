@@ -5,6 +5,7 @@ import { FaTimesCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getTicketHistoryByUser } from "../../service/userService";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import socket from "../../components/socket";
 
 const TicketHistory = () => {
     const [tickets, setTickets] = useState([]);
@@ -17,7 +18,23 @@ const TicketHistory = () => {
 
     useEffect(() => {
         fetchTickets();
-    }, []);
+
+        socket.emit("join", user.id);
+
+        socket.emit("user-ticket-history", user.id);
+
+        // WebSocket listener for user ticket history
+        socket.on("user-ticket-history", (data) => {
+            console.log("Received user-ticket-history:", data);
+            if (data.user_id === user.id) {
+                setTickets(data.tickets);
+            }
+        });
+
+        return () => {
+            socket.off("user-ticket-history");
+        };
+    }, [user.id, dispatch]);
 
     const fetchTickets = async () => {
         try {

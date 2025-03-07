@@ -110,7 +110,6 @@ const Home = () => {
                 const localStorageKey = `ticket_${ticket.ticket_id}_startTime`;
                 const expirationKey = `expired_ticket_${ticket.ticket_id}`;
 
-                // 🚨 Check if the ticket has already expired
                 if (localStorage.getItem(expirationKey)) {
                     console.log(`Ticket ${ticket.ticket_id} already expired, skipping...`);
                     return; // Don't reset the timer

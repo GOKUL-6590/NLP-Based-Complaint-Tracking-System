@@ -5,6 +5,7 @@ import { FaTimesCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getAssignedTicketsForTechnician } from "../../../service/TechnicianService"; // API call function
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
+import socket from "../../../components/socket"; // Import socket
 
 const WorkHistory = () => {
     const [tickets, setTickets] = useState([]);
@@ -15,14 +16,28 @@ const WorkHistory = () => {
 
     useEffect(() => {
         fetchAssignedTickets();
-    }, []);
+        socket.emit("join", user.id);
+        socket.emit("technician-work-history", user.id);
+
+        // WebSocket listener for technician work history
+        socket.on("technician-work-history", (data) => {
+            console.log("Received technician-work-history:", data);
+            if (data.technician_id === user.id) {
+                setTickets(data.tickets);
+            }
+        });
+
+        // Cleanup
+        return () => {
+            socket.off("technician-work-history");
+        };
+    }, [user.id, dispatch]);
 
     const fetchAssignedTickets = async () => {
         try {
             dispatch(showLoading())
             const response = await getAssignedTicketsForTechnician(user.id);
             dispatch(hideLoading())
-            console.log("API Response:", response);
 
             if (response.success) {
                 setTickets(response.tickets);

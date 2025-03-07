@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { CheckCircle, Hourglass, UserCheck, ClipboardList } from "lucide-react";
 import "./EditTicket.css";
 import { FaTimesCircle } from "react-icons/fa";
-import { closeTicket, getRequestedSpares, updateTicketStatus } from "../../service/TechnicianService"; // Added updateTicketPriority
-import socket from "../socket";
+import { closeTicket, getRequestedSpares, updateTicketStatus } from "../../service/TechnicianService";
+import socket from "../socket"; // Your WebSocket singleton
 import { useSelector } from "react-redux";
 import RequestSparesModal from "../RequestSpares/RequestSpares";
 import toast from "react-hot-toast";
@@ -13,10 +13,10 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
     if (!ticket) return null;
 
     const [closureLog, setClosureLog] = useState("");
-    const [openSpares, setOpenSpares] = useState();
+    const [openSpares, setOpenSpares] = useState(null); // Fixed null initialization
     const [spares, setSpares] = useState([]);
     const [status, setStatus] = useState(ticket.status);
-    const [priority, setPriority] = useState(ticket.priority); // New state for priority
+    const [priority, setPriority] = useState(ticket.priority);
     const [timer, setTimer] = useState(null);
     const [timeLeft, setTimeLeft] = useState(0);
     const [isDisputed, setIsDisputed] = useState(false);
@@ -37,24 +37,38 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
     const isTechnician = user.role === "technician";
     const isAdmin = user.role === "admin";
 
+    // Handle Closure Log Change
     const handleClosureLogChange = (e) => {
         setClosureLog(e.target.value);
     };
 
+    // Handle Status Update to "In Progress"
     const handleStatusUpdate = async (newStatus) => {
-        setStatus(newStatus);
-        console.log("Updated Status:", ticket);
-
-        if (newStatus.toLowerCase() === "inprogress") {
-            const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.id);
-            if (response.success) {
-                socket.emit("inprogress-update", ticket.user_id);
-                socket.emit("unread-notifications", ticket.user_id);
-                setStatus(newStatus);
+        try {
+            if (newStatus.toLowerCase() === "inprogress") {
+                const response = await updateTicketStatus(ticket.ticket_id, "In Progress", user.id, ticket.id);
+                if (response.success) {
+                    setStatus("In Progress");
+                    onStatusUpdate(ticket.ticket_id, "In Progress"); // Update parent component
+                    // Emit WebSocket events
+                    socket.emit("inprogress-update", ticket.user_id);
+                    socket.emit("unread-notifications", ticket.user_id);
+                    socket.emit("technician-work-history", ticket.technician_id);     // For WorkHistory
+                    socket.emit("ticket-assigned", ticket.ticket_id); // Notify ticket assignment changes
+                    socket.emit("technician-work-history", ticket.technician_id);     // For WorkHistory
+                    socket.emit("user-ticket-history", ticket.user_id);              // For TicketHistory
+                    toast.success("Ticket updated to In Progress");
+                } else {
+                    toast.error(response.message);
+                }
             }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("Failed to update status");
         }
     };
 
+    // Handle Close Ticket
     const handleCloseTicketClick = () => {
         setIsClosureModalOpen(true);
     };
@@ -68,26 +82,39 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
             const response = await closeTicket(ticket.ticket_id, "Closed", closureLog, user.id, ticket.id);
             if (response.success) {
                 setStatus("Closed");
-                onCloseTicket(ticket.ticket_id, closureLog);
+                onCloseTicket(ticket.ticket_id, closureLog); 
                 setIsClosureModalOpen(false);
                 setClosureLog("");
                 toast.success(response.message);
+                // Emit WebSocket events
+                socket.emit("technician-work-history", ticket.technician_id);     // For WorkHistory
+                socket.emit("inprogress-update", ticket.user_id); // Update ticket stats
+                socket.emit("unread-notifications", ticket.user_id);
+                socket.emit("ticket-assigned", ticket.ticket_id); // Update ticket lists
+                socket.emit("inprogress-update", ticket.user_id);         // For Home page
+                socket.emit("user-ticket-history", ticket.user_id);              // For TicketHistory
             } else {
                 toast.error(response.message);
             }
         } catch (error) {
             console.error("Error closing ticket:", error);
+            toast.error("Failed to close ticket");
         }
     };
 
-    // New function to handle priority update
+    // Handle Priority Update (Admin)
     const handlePriorityUpdate = async () => {
         try {
             const response = await updateTicketPriority(ticket.ticket_id, priority, ticket.user_id, ticket.technician_id);
             if (response.success) {
                 toast.success("Priority updated successfully");
-                // Optionally notify the user or technician via socket
-                socket.emit("unread-notifications", ticket.user_id);
+                // Emit WebSocket events
+                socket.emit("technician-assigned-tickets", ticket.technician_id); // New event
+                socket.emit("technician-work-history", ticket.technician_id);     // For WorkHistory
+                socket.emit("unread-notifications", ticket.user_id); // Notify user
+                socket.emit("ticket-assigned", ticket.ticket_id); // Update ticket lists
+                socket.emit("inprogress-update", ticket.user_id);         // For Home page
+                socket.emit("user-ticket-history", ticket.user_id);              // For TicketHistory
             } else {
                 toast.error(response.message);
             }
@@ -97,18 +124,41 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
         }
     };
 
+    // Fetch Spares and Set Up WebSocket Listeners
     useEffect(() => {
-        console.log(ticket);
+        socket.emit("join", user.id)
         const fetchSpares = async () => {
-            console.log(ticket.ticket_id);
             const response = await getRequestedSpares(ticket.ticket_id);
-            setSpares(response.requested_spares);
+            setSpares(response.requested_spares || []);
         };
 
         if (ticket.ticket_id) {
             fetchSpares();
         }
-    }, [ticket.ticket_id]);
+
+        // WebSocket listeners
+        socket.on("inprogress-update", (data) => {
+            if (data.user_id === ticket.user_id && data.tickets) {
+                const updatedTicket = data.tickets.find(t => t.ticket_id === ticket.ticket_id);
+                if (updatedTicket) {
+                    setStatus(updatedTicket.status);
+                }
+            }
+        });
+
+        socket.on("ticket-assigned", (data) => {
+            const updatedTicket = [...data.assigned, ...data.unassigned].find(t => t.ticket_id === ticket.ticket_id);
+            if (updatedTicket) {
+                setStatus(updatedTicket.status);
+                setPriority(updatedTicket.priority);
+            }
+        });
+
+        return () => {
+            socket.off("inprogress-update");
+            socket.off("ticket-assigned");
+        };
+    }, [ticket.ticket_id, ticket.user_id]);
 
     return (
         <div className="ticket-modal">
@@ -125,7 +175,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                         <div className="detail-item"><strong>Venue:</strong> {ticket.venue}, {ticket.block}</div>
                         <div className="detail-item"><strong>Category:</strong> {ticket.category}</div>
                         <div className="detail-item"><strong>Description:</strong> {ticket.description}</div>
-                        <div className="detail-item"><strong>Priority:</strong> {ticket.priority}</div>
+                        <div className="detail-item"><strong>Priority:</strong> {priority}</div> {/* Updated to use state */}
                     </div>
                     {isAdmin ? (
                         <>
@@ -139,7 +189,6 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                                 <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
                                 <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
                             </div>
-                            {/* New Admin Priority Section */}
                             <div className="modal-section">
                                 <h4>Change Priority</h4>
                                 <select
@@ -256,7 +305,7 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                             <p>No spares requested for this ticket.</p>
                         )}
                     </div>
-                    {isTechnician && status !== "closed" && (
+                    {isTechnician && status !== "Closed" && (
                         <div className="modal-section">
                             {status.toLowerCase() === "open" || status.toLowerCase() === "assigned" ? (
                                 <button onClick={() => handleStatusUpdate("inprogress")} className="action-button">
