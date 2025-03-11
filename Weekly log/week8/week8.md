@@ -1,5 +1,5 @@
 ### *Week 8: Notifications and Error Handling*
-- *Frontend*: AD213
+- *Frontend*:AD213
   - Add user-friendly notifications for success, warnings, and errors.
   - Implement loading spinners for long-running operations.
 - *Backend*: AD139
