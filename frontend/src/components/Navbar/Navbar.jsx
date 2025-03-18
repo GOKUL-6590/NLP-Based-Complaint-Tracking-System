@@ -35,6 +35,7 @@ function Navbar({ children }) {
         { name: "Dashboard", path: "/home", icon: "ri-dashboard-line" },
         { name: "New Ticket", path: "/new-ticket", icon: "ri-file-add-line" },
         { name: "Ticket History", path: "/ticket-history", icon: "ri-history-line" },
+        { name: "Messages", path: "/messages", icon: "ri-chat-3-line" }, // Added Messages
         { name: "Settings", path: "/settings", icon: "ri-settings-2-line" },
     ];
 
@@ -42,6 +43,7 @@ function Navbar({ children }) {
         { name: "Dashboard", path: "/technician/dashboard", icon: "ri-dashboard-line" },
         { name: "Assigned Tickets", path: "/technician/assigned-tickets", icon: "ri-ticket-line" },
         { name: "Work History", path: "/technician/work-history", icon: "ri-history-line" },
+        { name: "Messages", path: "/messages", icon: "ri-chat-3-line" }, // Added Messages
         { name: "Settings", path: "/settings", icon: "ri-settings-2-line" },
     ];
 
@@ -161,7 +163,7 @@ function Navbar({ children }) {
                         {/* Show app name in topbar only in mobile view when sidebar is collapsed */}
                         {isMobile && collapsed && (
                             <span className="mobile-app-name">
-                               
+
                                 Tikify
                             </span>
                         )}

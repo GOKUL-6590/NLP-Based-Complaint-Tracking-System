@@ -22,6 +22,7 @@ import Inventory from "./pages/Admin/Inventory/Inventory";
 import TechnicianDashboard from "./pages/Technician/Dashboard/TechnicianDashboard";
 import Spinner from "./Spinner/Spinner";
 import TicketDetails from "./pages/TicketPage/TicketPage";
+import Messages from "./pages/Messages/Messages";
 
 function App() {
   const { user } = useSelector((state) => state.user);
@@ -131,6 +132,7 @@ function App() {
                   <Route path="/admin/reports" element={<AdminReports />} />
                   <Route path="/admin/inventory" element={<Inventory />} />
                   <Route path="/ticket/:ticketId" element={<TicketDetails />} />
+                  <Route path="/messages" element={<Messages />} />
                 </Routes>
 
               </Navbar>

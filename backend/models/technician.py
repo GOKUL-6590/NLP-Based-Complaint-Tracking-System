@@ -48,6 +48,8 @@ def fetch_approved_technicians_from_db():
         return result
     except Exception as e:
         raise Exception(f"Database error: {str(e)}")
+
+
 def update_technician_approval_status(technician_id):
     try:
         connection = get_db_connection()

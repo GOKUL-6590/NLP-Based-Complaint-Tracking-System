@@ -1,9 +1,13 @@
+from flask import request
 from flask_socketio import SocketIO, emit
 from backend.models.admin import get_assigned_tickets_from_db, get_unassigned_tickets_from_db
 from backend.models.notifications import get_unread_notifications_count_by_userid
 from backend.models.technician import fetch_all_tickets_from_db, fetch_assigned_tickets_from_db
 from backend.models.user import get_tickets_by_userid, get_tickets_stats
 from datetime import datetime, timezone
+
+from backend.models.messages import  clear_messages_for_user, save_message
+
 
 # Configure CORS for socket
 socketio = SocketIO(cors_allowed_origins="*")
@@ -40,6 +44,19 @@ def serialize_ticket(ticket):
                 serialized[serialized_key] = ticket[ticket_key]
     return serialized
 
+
+def serialize_message(message):
+    """Convert message dictionary to a JSON-serializable format."""
+    serialized = {
+        "sender_id": message["sender_id"],
+        "receiver_id": message["receiver_id"],
+        "text": message["text"],
+        "timestamp": (message["timestamp"].replace(tzinfo=timezone.utc).isoformat()
+                      if isinstance(message["timestamp"], datetime) else message["timestamp"]),
+        "ticket_id": message["ticket_id"] if message["ticket_id"] is not None else None,
+        "is_read":message["is_read"]
+    }
+    return serialized
 
 @socketio.on("connect")
 def connect():
@@ -117,3 +134,24 @@ def emit_user_ticket_history(user_id):
             "tickets": serialized_tickets
         }, broadcast=True)
         
+@socketio.on("send-message")
+def handle_send_message(message):
+    saved_message = save_message(message)
+    if saved_message:
+        serialized_message = serialize_message(saved_message)
+        socketio.emit("new-message", serialized_message)
+    else:
+        print("Failed to save or retrieve message")
+
+@socketio.on("clear-chat")
+def handle_clear_chat(data):
+    user_id = data["sender_id"]  # Initiator
+    contact_id = data["receiver_id"]  # Other party
+    
+    success = clear_messages_for_user(user_id, contact_id)
+    if success:
+        emit("chat-cleared", {"user_id": user_id, "contact_id": contact_id}, broadcast=True)
+    else:
+        emit("clear-chat-failed", {"error": "Failed to clear chat"}, to=request.sid)
+
+
