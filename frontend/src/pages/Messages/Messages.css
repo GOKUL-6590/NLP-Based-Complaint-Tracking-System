@@ -1,3 +1,14 @@
+/* Prevent body scrolling on mobile */
+@media (max-width: 768px) {
+
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+        /* Disable body scrolling */
+    }
+}
+
 .messages-container {
     display: flex;
     height: 90vh;
@@ -20,7 +31,6 @@
     color: #212529;
     margin-bottom: 15px;
     text-align: center;
-    /* Subtle green for header */
     padding-bottom: 10px;
     font-weight: 600;
 }
@@ -37,14 +47,12 @@
 
 .contact-item:hover {
     background: #e9f5e9;
-    /* Light green hover */
     transform: translateX(3px);
 }
 
 .contact-item.selected {
     background: #e3e3e3;
     color: #0d0d0d;
-
 }
 
 .contact-avatar {
@@ -60,7 +68,6 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
-    /* Ensures it takes up available space */
 }
 
 .unread-count {
@@ -68,21 +75,15 @@
     align-items: center;
     justify-content: center;
     min-width: 20px;
-    /* Minimum width to keep it circular even with single digits */
     height: 20px;
     margin-left: 8px;
-    /* Space between name and badge */
     padding: 0 6px;
-    /* Horizontal padding for wider numbers */
     background-color: #25d366;
-    /* WhatsApp green */
     color: white;
     font-size: 12px;
     font-weight: bold;
     border-radius: 50%;
-    /* Circular shape */
     line-height: 20px;
-    /* Vertically center text */
 }
 
 .contact-info span {
@@ -104,24 +105,21 @@
     border-radius: 12px;
     margin: 10px;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    /* For positioning the scroll-down button */
 }
 
 .chat-header {
     display: flex;
     align-items: center;
     padding: 15px;
-    background: #0575E6;
-    /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #021B79, #0575E6);
-    /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #021B79, #0575E6);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-    /* Subtle green gradient */
     color: #ffffff;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .chat-avatar {
@@ -194,11 +192,8 @@
 
 .message.sent {
     margin-left: auto;
-    /* Aligns to the right */
     background: #dbffe3;
-    /* Subtle green, inspired by #dcf8c6 */
     color: #0e521e;
-    /* Darker text for contrast */
     border-radius: 18px 18px 0 18px;
     padding: 12px 18px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
@@ -206,9 +201,7 @@
 
 .message.received {
     margin-right: auto;
-    /* Aligns to the left */
     background: #f8f9fa;
-    /* Subtle gray, inspired by #ffffff */
     color: #212529;
     border: 1px solid #ced4da;
     border-radius: 18px 18px 18px 0;
@@ -257,18 +250,38 @@
     opacity: 1;
 }
 
-/* Added styling for scroll-down-btn */
-
+.scroll-down-btn {
+    position: absolute;
+    bottom: 70px;
+    /* Position just above the chat-input */
+    right: 20px;
+    /* Align to the right */
+    background: #28a745;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+    z-index: 15;
+    /* Ensure it’s above the chat-messages and chat-input */
+}
 
 .scroll-down-btn:hover {
     background: #218838;
-    /* Darker green on hover */
     transform: scale(1.1);
 }
 
 .chat-input {
     display: flex;
-    padding: 15px;
+    align-items: center;
+    padding: 10px 15px;
     background: #fff;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
@@ -277,12 +290,14 @@
 
 .chat-input input {
     flex-grow: 1;
-    padding: 12px 18px;
+    padding: 12px 20px;
     border: 1px solid #ced4da;
-    border-radius: 30px;
+    border-radius: 50px;
     font-size: 1.05rem;
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #f0f2f5;
+    margin-right: 10px;
 }
 
 .chat-input input:focus {
@@ -294,12 +309,15 @@
     background: #28a745;
     border: none;
     color: #fff;
-    padding: 12px 25px;
-    border-radius: 30px;
-    margin-left: 12px;
+    padding: 12px;
+    border-radius: 50%;
+    margin-left: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
@@ -329,5 +347,114 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive Layout */
+@media (max-width: 768px) {
+    .messages-container {
+        height: 85vh;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .contacts-list {
+        width: 100%;
+        border-right: none;
+        padding: 10px;
+        display: block;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .chat-area {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        display: none;
+        height: 100vh;
+        position: relative;
+    }
+
+    .messages-container:has(.chat-area:not(.active)) .contacts-list {
+        display: block;
+    }
+
+    .messages-container:has(.chat-area.active) .contacts-list {
+        display: none;
+    }
+
+    .messages-container .chat-area.active {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-item {
+        padding: 10px;
+    }
+
+    .chat-header {
+        padding: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        flex-shrink: 0;
+    }
+
+    .chat-messages {
+        padding: 15px;
+        overflow-y: auto;
+        flex-grow: 1;
+        padding-top: 60px;
+        padding-bottom: 15px;
+    }
+
+    .chat-input {
+        padding: 10px 15px;
+        flex-shrink: 0;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        background: #fff;
+    }
+
+    .chat-input input {
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 50px;
+        margin-right: 8px;
+    }
+
+    .send-btn {
+        padding: 10px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+    }
+
+    .chat-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .chat-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .close-chat-btn,
+    .clear-chat-btn {
+        font-size: 1.1rem;
+    }
+
+    .scroll-down-btn {
+        bottom: 70px;
+        /* Adjust to position just above the chat-input on mobile */
+        right: 15px;
+        /* Slightly closer to the edge on mobile */
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        padding: 8px;
     }
 }

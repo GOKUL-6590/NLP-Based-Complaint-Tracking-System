@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import "./Messages.css";
 import socket from "../../components/socket";
 import { fetchMappedTechnicians, fetchMappedUsers, fetchMessages, markMessagesAsRead, fetchUnreadCounts } from "../../service/messageService";
 import { FaTrash, FaTimes, FaPaperPlane, FaArrowDown } from "react-icons/fa";
-import ScrollToBottom from "react-scroll-to-bottom";
 
 const Messages = () => {
     const { user } = useSelector((state) => state.user);
@@ -23,6 +22,9 @@ const Messages = () => {
     const [newMessage, setNewMessage] = useState("");
     const [showScrollDown, setShowScrollDown] = useState(false);
     const [unreadCounts, setUnreadCounts] = useState({});
+
+    const messagesEndRef = useRef(null);
+    const chatMessagesRef = useRef(null);
 
     useEffect(() => {
         const fetchContactsAndCounts = async () => {
@@ -49,27 +51,28 @@ const Messages = () => {
         fetchContactsAndCounts();
 
         socket.emit("join", persistedUser.id);
-        socket.on("new-message", (message) => {
-            console.log("New message received:", message); // Debug log
+        socket.on("new-message", async (message) => {
+            console.log("New message received:", message);
 
-            // Add message to current chat if it involves the selected contact
             const isForCurrentChat =
                 (message.sender_id === persistedUser.id || message.receiver_id === persistedUser.id) &&
                 (message.sender_id === selectedContact?.id || message.receiver_id === selectedContact?.id);
+
             if (isForCurrentChat) {
                 setMessages((prev) => [...prev, message]);
-            }
-
-
-            // Update unread count if the message is for this user and unread
-            if (message.receiver_id === persistedUser.id && message.is_read === 0) {
+                if (message.receiver_id === persistedUser.id && message.is_read === 0 && selectedContact) {
+                    await markMessagesAsRead(persistedUser.id, selectedContact.id);
+                    const updatedUnreadResponse = await fetchUnreadCounts(persistedUser.id);
+                    if (updatedUnreadResponse.success) {
+                        setUnreadCounts(updatedUnreadResponse.unread_counts || {});
+                    }
+                }
+            } else if (message.receiver_id === persistedUser.id && message.is_read === 0) {
                 const contactId = message.sender_id;
-                setUnreadCounts((prev) => {
-                    const newCounts = { ...prev };
-                    newCounts[contactId] = (newCounts[contactId] || 0) + 1;
-                    console.log("Updated unread counts:", newCounts); // Debug log
-                    return newCounts;
-                });
+                setUnreadCounts((prev) => ({
+                    ...prev,
+                    [contactId]: (prev[contactId] || 0) + 1,
+                }));
             }
         });
 
@@ -87,6 +90,7 @@ const Messages = () => {
 
     useEffect(() => {
         if (!selectedContact) return;
+
         const fetchChatHistory = async () => {
             try {
                 const response = await fetchMessages(persistedUser.id, selectedContact.id, isTechnician);
@@ -98,18 +102,40 @@ const Messages = () => {
                                 (msg.receiver_id === persistedUser.id && !msg.is_deleted_for_receiver)
                         )
                     );
-                    await markMessagesAsRead(persistedUser.id, selectedContact.id);
-                    const unreadResponse = await fetchUnreadCounts(persistedUser.id);
-                    if (unreadResponse.success) {
-                        setUnreadCounts(unreadResponse.unread_counts || {});
-                    }
+                }
+
+                await markMessagesAsRead(persistedUser.id, selectedContact.id);
+                const unreadResponse = await fetchUnreadCounts(persistedUser.id);
+                if (unreadResponse.success) {
+                    setUnreadCounts(unreadResponse.unread_counts || {});
                 }
             } catch (error) {
-                console.error("Failed to fetch messages:", error);
+                console.error("Failed to fetch messages or update read status:", error);
             }
         };
+
         fetchChatHistory();
     }, [selectedContact, persistedUser.id, isTechnician]);
+
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
+
+    const handleScroll = () => {
+        if (chatMessagesRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = chatMessagesRef.current;
+            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+            setShowScrollDown(!isAtBottom);
+        }
+    };
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    };
 
     const sendMessage = () => {
         if (!newMessage.trim() || !selectedContact) return;
@@ -142,18 +168,6 @@ const Messages = () => {
         setMessages([]);
     };
 
-    const scrollToBottom = () => {
-        document.querySelector(".chat-messages")?.scrollTo({
-            top: Number.MAX_SAFE_INTEGER,
-            behavior: "smooth",
-        });
-    };
-
-    const handleScroll = ({ scrollTop, scrollHeight, clientHeight }) => {
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
-        setShowScrollDown(!isAtBottom);
-    };
-
     return (
         <div className="messages-container">
             <div className="contacts-list">
@@ -174,7 +188,7 @@ const Messages = () => {
                     </div>
                 ))}
             </div>
-            <div className="chat-area">
+            <div className={`chat-area ${selectedContact ? "active" : ""}`}>
                 {selectedContact ? (
                     <>
                         <div className="chat-header">
@@ -187,11 +201,7 @@ const Messages = () => {
                                 <FaTimes />
                             </button>
                         </div>
-                        <ScrollToBottom
-                            className="chat-messages"
-                            onScroll={handleScroll}
-                            followButtonClassName="scroll-down-btn"
-                        >
+                        <div className="chat-messages" ref={chatMessagesRef} onScroll={handleScroll}>
                             {messages.map((msg, idx) => (
                                 <div
                                     key={idx}
@@ -208,12 +218,13 @@ const Messages = () => {
                                     </div>
                                 </div>
                             ))}
-                            {showScrollDown && (
-                                <button className="scroll-down-btn" onClick={scrollToBottom} title="Scroll to bottom">
-                                    <FaArrowDown />
-                                </button>
-                            )}
-                        </ScrollToBottom>
+                            <div ref={messagesEndRef} />
+                        </div>
+                        {showScrollDown && (
+                            <button className="scroll-down-btn" onClick={scrollToBottom} title="Scroll to bottom">
+                                <FaArrowDown />
+                            </button>
+                        )}
                         <div className="chat-input">
                             <input
                                 type="text"
