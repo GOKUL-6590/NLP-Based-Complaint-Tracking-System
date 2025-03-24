@@ -219,13 +219,19 @@
     align-items: center;
     justify-content: space-between;
     margin-top: 10px;
+    padding: 0 15px;
+    /* Add padding to account for step width */
 }
 
 .progress-line {
     position: absolute;
     top: 50%;
-    left: 10%;
-    width: 80%;
+    left: 15px;
+    /* Start at the center of the first step */
+    right: 15px;
+    /* End at the center of the last step */
+    width: calc(100% - 30px);
+    /* Span between the centers of the first and last steps */
     height: 5px;
     background: #ddd;
     transform: translateY(-50%);
@@ -235,12 +241,15 @@
 .progress-fill {
     position: absolute;
     top: 50%;
-    left: 10%;
+    left: 15px;
+    /* Start at the center of the first step */
     height: 5px;
     background: #2563eb;
     transform: translateY(-50%);
     z-index: 1;
     transition: width 0.5s ease-in-out;
+    max-width: calc(100% - 30px);
+    /* Ensure it doesn't exceed the progress-line */
 }
 
 .progress-step {
@@ -249,6 +258,12 @@
     padding: 6px;
     border-radius: 50%;
     z-index: 2;
+    width: 30px;
+    /* Fixed width for consistency */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .progress-step.active {
