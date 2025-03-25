@@ -6,8 +6,8 @@ import json
 
 from backend.NLP.classifier import classify_complaint
 from backend.models.technician import assign_unassigned_tickets
-from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_tickets_by_userid, get_tickets_stats, store_push_subscription, submit_ticket_feedback
-from ..models.notifications import  delete_notifications_by_receiver, get_notifications_by_receiver, get_unread_notifications_count_by_userid, mark_all_notification_as_read, mark_notification_as_read, save_fcm_token_to_db
+from backend.models.user import assign_ticket_to_technician, create_new_ticket, dispute_ticket_in_db, get_ticket_by_id, get_ticket_details, get_tickets_by_userid, get_tickets_stats, store_push_subscription, submit_ticket_feedback
+from ..models.notifications import  delete_notifications_by_receiver, get_notifications_by_receiver, get_unread_notifications_count_by_userid, mark_all_notification_as_read, mark_notification_as_read, save_fcm_token_to_db, send_notification
 from flask import jsonify
 from datetime import datetime, timedelta
 from flask import request, jsonify
@@ -295,6 +295,28 @@ def dispute_ticket(ticket_id):
                 "message": "Failed to dispute the ticket.",
                 "success": False
             }), 500
+
+        ticket_details = get_ticket_details(ticket_id)
+        if not ticket_details:
+            return jsonify({
+                "message": "Ticket not found after update.",
+                "success": False
+            }), 500
+
+        # Send notifications to user and technician
+        user_id = ticket_details.get("user_id")
+        technician_id = ticket_details.get("technician_id")
+
+        if technician_id:
+            technician_link_url = "/technician/assigned-tickets"
+            send_notification(
+                sender_id=user_id,  # System-generated notification
+                receiver_id=technician_id,
+                sender_name="System",
+                message=f"Ticket (ID: {ticket_id}) assigned to you has been disputed by the user.",
+                notification_type="Ticket Disputed",
+                link_url=technician_link_url
+            )
 
         return jsonify({
             "message": "Ticket disputed successfully.",

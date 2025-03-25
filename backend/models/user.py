@@ -699,3 +699,30 @@ def submit_ticket_feedback(ticket_id, user_id, technician_id, feedback, rating=N
         cursor.close()
         conn.close()
 
+def get_ticket_details(ticket_id):
+  
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT ticket_id FROM tickets WHERE ticket_id = %s", (ticket_id,))
+        ticket = cursor.fetchone()
+        if not ticket:
+            print(f"Ticket {ticket_id} not found in tickets table.")
+            return None
+
+        cursor.execute("""
+            SELECT user_id, technician_id 
+            FROM ticket_mapping 
+            WHERE ticket_id = %s
+        """, (ticket_id,))
+        ticket_mapping = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        return ticket_mapping
+
+    except Exception as e:
+        print(f"Error fetching ticket details: {str(e)}")
+        return None 

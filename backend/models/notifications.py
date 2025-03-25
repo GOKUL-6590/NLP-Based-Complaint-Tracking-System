@@ -97,9 +97,12 @@ def send_notification(sender_id, receiver_id, sender_name, message, notification
             subscription_data = json.loads(subscription_row['subscription'])
             print(f"Subscription data: {subscription_data}")
             endpoint = subscription_data.get('endpoint', '')
-           
 
-            endpoint_origin = urlparse(endpoint).scheme + '://' + urlparse(endpoint).hostname
+            if 'fcm.googleapis.com' in endpoint:
+                endpoint_origin = 'https://fcm.googleapis.com'  
+            else:
+                endpoint_origin = urlparse(endpoint).scheme + '://' + urlparse(endpoint).hostname
+
             vapid_claims = {
                 "sub": f"mailto:{VAPID_EMAIL}",
                 "aud": endpoint_origin,
