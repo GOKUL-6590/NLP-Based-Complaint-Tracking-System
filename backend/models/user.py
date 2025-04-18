@@ -426,7 +426,7 @@ def get_tickets_stats(user_id):
             SELECT COUNT(*) as active_tickets 
             FROM tickets t
             JOIN ticket_mapping tm ON t.ticket_id = tm.ticket_id
-            WHERE t.status IN ('Open', 'In Progress') AND tm.user_id = %s
+            WHERE t.status IN ('Open','Assigned', 'In Progress') AND tm.user_id = %s
         """, (user_id,))
         active_tickets = cursor.fetchone()["active_tickets"]
 
