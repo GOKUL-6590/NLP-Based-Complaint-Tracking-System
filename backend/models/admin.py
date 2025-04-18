@@ -91,8 +91,8 @@ def get_assigned_tickets_from_db():
             u.name AS user_name,
             u.phoneNumber AS user_phone_number,
             tech.id AS technician_id,
-            tech.name AS technician_name,
-            tech.phoneNumber AS technician_phone_number,
+            tech.name AS Technician_name,
+            tech.phoneNumber AS Technician_phone_number,
             GROUP_CONCAT(a.file_path SEPARATOR ', ') AS attachments
         FROM tickets t
         JOIN ticket_mapping tm ON t.ticket_id = tm.ticket_id

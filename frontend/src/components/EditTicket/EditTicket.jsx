@@ -187,8 +187,8 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                             </div>
                             <div className="modal-section">
                                 <h4>Assigned To</h4>
-                                <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
-                                <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
+                                <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
+                                <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
                             </div>
                             <div className="modal-section">
                                 <h4>Change Priority</h4>
@@ -218,8 +218,8 @@ const TicketModal = ({ ticket, onClose, onStatusUpdate, onCloseTicket, onRequest
                     ) : (
                         <div className="modal-section">
                             <h4>Assigned To</h4>
-                            <div className="detail-item"><strong>Name:</strong> {ticket.technician_name || "Unknown"}</div>
-                            <div className="detail-item"><strong>Contact:</strong> {ticket.technician_phone_number || "N/A"}</div>
+                            <div className="detail-item"><strong>Name:</strong> {ticket.Technician_name || "Unknown"}</div>
+                            <div className="detail-item"><strong>Contact:</strong> {ticket.Technician_phone_number || "N/A"}</div>
                         </div>
                     )}
                     <div className="modal-section">
