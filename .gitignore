@@ -13,5 +13,8 @@ backend/__pycache__/
 backend/routes/__pycache__/
 .vscode/
  backend/NLP/
+ backend/NLP/__pycache__/
+ backend/NLP/trained_model/
+
 
  
